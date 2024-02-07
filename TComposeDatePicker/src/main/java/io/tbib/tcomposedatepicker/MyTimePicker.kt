@@ -34,7 +34,7 @@ fun MyTimePicker(
     }
     val formattedDate by remember{
         derivedStateOf {
-            DateTimeFormatter.ofPattern(config.dateFormatPattern).format(pickerTime)
+            DateTimeFormatter.ofPattern(config.timeFormatPattern).format(pickerTime)
         }
     }
     val dateDialogState = rememberMaterialDialogState()

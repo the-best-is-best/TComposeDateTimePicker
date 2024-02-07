@@ -56,7 +56,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 ),
                 onDateSelected = {
                     dateTime = LocalDateTime.of(it, dateTime.toLocalTime())
-                  Log.d("MainActivity", "Selected date: ${dateTime}")
+                  Log.d("MainActivity", "Selected date: $dateTime")
                 }
             )
         Spacer(modifier =Modifier.height(16.dp))

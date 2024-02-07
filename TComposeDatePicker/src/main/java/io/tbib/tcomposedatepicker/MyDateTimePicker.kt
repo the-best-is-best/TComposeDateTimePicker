@@ -30,7 +30,7 @@ fun MyDateTimePicker(
     }
     val formattedDate by remember{
         derivedStateOf {
-            DateTimeFormatter.ofPattern(config.dateFormatPattern).format(pickerDateTime)
+            DateTimeFormatter.ofPattern(config.dateConfig.dateFormatPattern + " " + config.timeConfig.timeFormatPattern).format(pickerDateTime)
         }
     }
 
