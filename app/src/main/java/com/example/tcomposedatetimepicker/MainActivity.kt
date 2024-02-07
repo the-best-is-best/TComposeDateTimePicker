@@ -5,18 +5,25 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.tcomposedatetimepicker.ui.theme.TComposeDateTimePickerTheme
 import io.tbib.tcomposedatepicker.ConfigDatePicker
-import io.tbib.tcomposedatepicker.ConfigDatePicker.Companion.activeDateInPastOnly
+import io.tbib.tcomposedatepicker.ConfigDatePicker.Companion.activeDateInFutureOnly
 import io.tbib.tcomposedatepicker.TDatePicker
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,18 +42,36 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
+    var dateTime by remember {
+        mutableStateOf(LocalDateTime.now())
+    }
 
     Column {
             TDatePicker.ShowDatePicker(
                 config = ConfigDatePicker(
-                ).activeDateInPastOnly(),
+                    allowedDateValidator = {activeDateInFutureOnly(it, false)},
+                    yearRange = IntRange(LocalDate.now().year, LocalDate.now().year+100),
+                ),
                 onDateSelected = {
-                  Log.d("MainActivity", "Selected date: $it")
+                    dateTime = LocalDateTime.of(it, dateTime.toLocalTime())
+                  Log.d("MainActivity", "Selected date: $dateTime")
                 }
             )
+        Spacer(modifier =Modifier.height(16.dp))
+        TDatePicker.ShowTimePicker(
+           onTimeSelected = {
+                    dateTime = LocalDateTime.of(dateTime.toLocalDate(), it)
+                    Log.d("MainActivity", "Selected time: $it")
+                }
+
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        TDatePicker.ShowDateTimePicker(onDateTimeSelected ={
+            dateTime = it
+            Log.d("MainActivity", "Selected date and time: $it")
+        })
     }
 }
 
@@ -57,16 +82,3 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-object PastOrPresentSelectableDates : SelectableDates {
-    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-        return utcTimeMillis > System.currentTimeMillis()-60*60*24*1000// Disables future dates
-    }
-
-    // If you need to disable specific years too:
-    override fun isSelectableYear(year: Int): Boolean {
-        return year >= 2024
-    }
-}
-// Implement your logic here based on desired year restrictions

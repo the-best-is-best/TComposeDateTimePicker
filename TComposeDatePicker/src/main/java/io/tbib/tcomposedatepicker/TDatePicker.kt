@@ -1,35 +1,47 @@
 package io.tbib.tcomposedatepicker
 
-import android.annotation.SuppressLint
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import java.text.SimpleDateFormat
-import java.util.Date
-
+import com.vanpra.composematerialdialogs.datetime.date.DatePickerColors
+import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
+import com.vanpra.composematerialdialogs.datetime.time.TimePickerColors
+import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
   class TDatePicker {
 
     companion object {
-        @SuppressLint("RememberReturnType")
         @Composable
-        fun ShowDatePicker(config: ConfigDatePicker, onDateSelected:(String)->Unit) {
-            MyDatePicker(config, onDateSelected)
+        fun ShowDatePicker(config: ConfigDatePicker, onDateSelected:(LocalDate)->Unit , colors : DatePickerColors = DatePickerDefaults.colors() ) {
+            MyDatePicker(config, onDateSelected, colors)
         }
+        @Composable
+        fun ShowTimePicker(
+            config: ConfigTimePicker = ConfigTimePicker(),
+            onTimeSelected: (LocalTime) -> Unit,
+             colors: TimePickerColors = TimePickerDefaults.colors()
 
-        @SuppressLint("SimpleDateFormat")
-      internal  fun convertMillisToDate(millis: Long): String {
-            val formatter = SimpleDateFormat("dd-MM-yyyy")
-            return formatter.format(Date(millis))
-        }
-
-        @Composable
-        fun TimePicker() {
-            println("Showing time picker")
+        ) {
+           MyTimePicker(
+                config = config,
+                onTimeSelected = onTimeSelected,
+               colors
+           )
         }
         @Composable
-        fun DateTimePicker() {
-            println("Showing date time picker")
+        fun ShowDateTimePicker(config:ConfigDateTimePicker = ConfigDateTimePicker(),
+                           onDateTimeSelected: (LocalDateTime) -> Unit,
+                           colorsDate: DatePickerColors = DatePickerDefaults.colors(),
+                           colorsTime: TimePickerColors = TimePickerDefaults.colors() ){
+            MyDateTimePicker(
+                onDateTimeSelected = onDateTimeSelected,
+                config = config,
+                colorsDate = colorsDate,
+                colorsTime = colorsTime
+            )
         }
     }
 
