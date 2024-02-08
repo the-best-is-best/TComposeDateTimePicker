@@ -2,8 +2,10 @@ package io.tbib.tcomposedatepicker
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -12,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerColors
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -23,9 +26,12 @@ import java.time.format.DateTimeFormatter
 @Composable
 @ExperimentalMaterial3Api
 fun MyTimePicker(
+    modifier: Modifier,
     config: ConfigTimePicker = ConfigTimePicker(),
     onTimeSelected: (LocalTime) -> Unit,
-     colors: TimePickerColors = TimePickerDefaults.colors()
+    colors: TimePickerColors = TimePickerDefaults.colors(),
+    inputFieldColors: TextFieldColors,
+    shape: CornerBasedShape
 
 ) {
 
@@ -41,8 +47,11 @@ fun MyTimePicker(
 
 
     OutlinedTextField(
+        shape = shape,
+        modifier = modifier,
         readOnly = true,
         value = formattedDate,
+        colors = inputFieldColors,
         onValueChange ={},
         interactionSource = remember { MutableInteractionSource() }
             .also { interactionSource ->

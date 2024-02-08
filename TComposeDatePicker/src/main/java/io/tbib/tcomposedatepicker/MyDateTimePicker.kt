@@ -2,7 +2,9 @@ package io.tbib.tcomposedatepicker
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -11,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerColors
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -22,8 +25,15 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun MyDateTimePicker(
+    modifier: Modifier,
     onDateTimeSelected: (LocalDateTime) -> Unit,
-    config:ConfigDateTimePicker, colorsDate: DatePickerColors, colorsTime: TimePickerColors){
+    config:ConfigDateTimePicker,
+    colorsDate: DatePickerColors,
+    colorsTime: TimePickerColors,
+    inputFieldColors: TextFieldColors,
+    shape: CornerBasedShape
+
+){
 
     var pickerDateTime by rememberSaveable {
         mutableStateOf(LocalDateTime.now())
@@ -88,8 +98,11 @@ fun MyDateTimePicker(
 
 
     OutlinedTextField(
+        modifier = modifier,
+        shape = shape,
         readOnly = true,
         value = formattedDate,
+        colors = inputFieldColors,
         onValueChange ={},
         interactionSource = remember { MutableInteractionSource() }
             .also { interactionSource ->
