@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +51,15 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
     Column {
             TDatePicker.ShowDatePicker(
+
                 config = ConfigDatePicker(
+                    placeholder = {
+                        Text("Select Date")
+                    },
+                    label = {
+                        Text("Date")
+                    },
+                    displayInitDate = LocalDate.now(),
                     allowedDateValidator = {activeDateInFutureOnly(it, false)},
                     yearRange = IntRange(LocalDate.now().year, LocalDate.now().year+100),
                 ),
@@ -61,6 +70,11 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             )
         Spacer(modifier =Modifier.height(16.dp))
         TDatePicker.ShowTimePicker(
+            config = io.tbib.tcomposedatepicker.ConfigTimePicker(
+                placeholder = {
+                    Text("Select Time")
+                }
+            ),
            onTimeSelected = {
                     dateTime = LocalDateTime.of(dateTime.toLocalDate(), it)
                     Log.d("MainActivity", "Selected time: $it")
@@ -68,7 +82,13 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
         )
         Spacer(modifier = Modifier.height(16.dp))
-        TDatePicker.ShowDateTimePicker(onDateTimeSelected ={
+        TDatePicker.ShowDateTimePicker(
+            config = io.tbib.tcomposedatepicker.ConfigDateTimePicker(
+                placeholder = {
+                    Text("Select Date and Time")
+                }
+            ),
+            onDateTimeSelected ={
             dateTime = it
             Log.d("MainActivity", "Selected date and time: $it")
         })

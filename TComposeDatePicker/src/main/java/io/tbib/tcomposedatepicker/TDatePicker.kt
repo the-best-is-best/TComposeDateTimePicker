@@ -23,7 +23,7 @@ import java.time.LocalTime
         fun ShowDatePicker(
             modifier: Modifier = Modifier,
             config: ConfigDatePicker,
-            onDateSelected:(LocalDate)->Unit ,
+            onDateSelected:(LocalDate?)->Unit ,
             colors : DatePickerColors = DatePickerDefaults.colors(),
             inputFieldColors: TextFieldColors =  TextFieldDefaults.colors(),
             shape: CornerBasedShape = MaterialTheme.shapes.small
@@ -34,7 +34,7 @@ import java.time.LocalTime
         fun ShowTimePicker(
             modifier: Modifier = Modifier,
             config: ConfigTimePicker = ConfigTimePicker(),
-            onTimeSelected: (LocalTime) -> Unit,
+            onTimeSelected: (LocalTime?) -> Unit,
              colors: TimePickerColors = TimePickerDefaults.colors(),
             inputFieldColors: TextFieldColors =  TextFieldDefaults.colors(),
             shape: CornerBasedShape = MaterialTheme.shapes.small
@@ -55,7 +55,7 @@ import java.time.LocalTime
             modifier: Modifier = Modifier,
 
             config:ConfigDateTimePicker = ConfigDateTimePicker(),
-            onDateTimeSelected: (LocalDateTime) -> Unit,
+            onDateTimeSelected: (LocalDateTime?) -> Unit,
             colorsDate: DatePickerColors = DatePickerDefaults.colors(),
             colorsTime: TimePickerColors = TimePickerDefaults.colors(),
             inputFieldColors: TextFieldColors =  TextFieldDefaults.colors(),

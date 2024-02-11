@@ -28,19 +28,22 @@ import java.time.format.DateTimeFormatter
 fun MyTimePicker(
     modifier: Modifier,
     config: ConfigTimePicker = ConfigTimePicker(),
-    onTimeSelected: (LocalTime) -> Unit,
+    onTimeSelected: (LocalTime?) -> Unit,
     colors: TimePickerColors = TimePickerDefaults.colors(),
     inputFieldColors: TextFieldColors,
-    shape: CornerBasedShape
+    shape: CornerBasedShape,
+
 
 ) {
 
     var pickerTime by rememberSaveable {
-        mutableStateOf(LocalTime.now())
+        mutableStateOf(config.displayInitTime)
     }
     val formattedDate by remember{
-        derivedStateOf {
-            DateTimeFormatter.ofPattern(config.timeFormatPattern).format(pickerTime)
+
+            derivedStateOf {
+                DateTimeFormatter.ofPattern(config.timeFormatPattern).format(pickerTime)
+
         }
     }
     val dateDialogState = rememberMaterialDialogState()
@@ -50,7 +53,9 @@ fun MyTimePicker(
         shape = shape,
         modifier = modifier,
         readOnly = true,
-        value = formattedDate,
+        value = if(pickerTime == null) "" else formattedDate,
+        label = config.label,
+        placeholder = config.placeholder,
         colors = inputFieldColors,
         onValueChange ={},
         interactionSource = remember { MutableInteractionSource() }

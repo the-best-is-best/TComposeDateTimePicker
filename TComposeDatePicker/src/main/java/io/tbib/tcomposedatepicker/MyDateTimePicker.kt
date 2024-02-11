@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MyDateTimePicker(
     modifier: Modifier,
-    onDateTimeSelected: (LocalDateTime) -> Unit,
+    onDateTimeSelected: (LocalDateTime?) -> Unit,
     config:ConfigDateTimePicker,
     colorsDate: DatePickerColors,
     colorsTime: TimePickerColors,
@@ -36,12 +36,14 @@ fun MyDateTimePicker(
 ){
 
     var pickerDateTime by rememberSaveable {
-        mutableStateOf(LocalDateTime.now())
+        mutableStateOf(config.displayInitDateTime)
     }
     val formattedDate by remember{
-        derivedStateOf {
-            DateTimeFormatter.ofPattern(config.dateConfig.dateFormatPattern + " " + config.timeConfig.timeFormatPattern).format(pickerDateTime)
+            derivedStateOf {
+                DateTimeFormatter.ofPattern(config.dateConfig.dateFormatPattern + " " + config.timeConfig.timeFormatPattern).format(pickerDateTime?: LocalDateTime.now())
+
         }
+
     }
 
     val dateDialogState = rememberMaterialDialogState()
@@ -69,7 +71,8 @@ fun MyDateTimePicker(
             colors = colorsDate
 
         ) {
-            pickerDateTime = LocalDateTime.of(it, pickerDateTime.toLocalTime())
+            pickerDateTime = LocalDateTime.now()
+                pickerDateTime = LocalDateTime.of(it, pickerDateTime!!.toLocalTime())
         }
     }
 
@@ -92,7 +95,7 @@ fun MyDateTimePicker(
             title = config.timeConfig.title,
             colors = colorsTime
         ) {
-            pickerDateTime = LocalDateTime.of(pickerDateTime.toLocalDate(), it)
+                pickerDateTime = LocalDateTime.of(pickerDateTime!!.toLocalDate(), it)
         }
     }
 
@@ -101,8 +104,10 @@ fun MyDateTimePicker(
         modifier = modifier,
         shape = shape,
         readOnly = true,
-        value = formattedDate,
+        value = if(pickerDateTime == null) "" else formattedDate,
         colors = inputFieldColors,
+        label = config.label,
+        placeholder = config.placeholder,
         onValueChange ={},
         interactionSource = remember { MutableInteractionSource() }
             .also { interactionSource ->

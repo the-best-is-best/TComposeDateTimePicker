@@ -27,20 +27,23 @@ import java.time.format.DateTimeFormatter
 @Composable
 internal fun MyDatePicker(
     modifier: Modifier,
-    config: ConfigDatePicker, onDateSelected:(LocalDate)->Unit,
+    config: ConfigDatePicker, onDateSelected:(LocalDate?)->Unit,
     colors : DatePickerColors,
     inputFieldColors: TextFieldColors,
     shape: CornerBasedShape
 
 ){
     var pickerDate by rememberSaveable {
-         mutableStateOf(LocalDate.now())
+         mutableStateOf<LocalDate?>(config.displayInitDate)
      }
-          val formattedDate by remember{
+      val formattedDate by remember{
+
               derivedStateOf {
-                  DateTimeFormatter.ofPattern(config.dateFormatPattern).format(pickerDate)
-              }
+                  DateTimeFormatter.ofPattern(config.dateFormatPattern).format(pickerDate?: LocalDate.now())
+
           }
+
+      }
     val dateDialogState = rememberMaterialDialogState()
 
 
@@ -48,7 +51,9 @@ internal fun MyDatePicker(
           modifier = modifier,
             shape = shape,
           readOnly = true,
-          value = formattedDate,
+          value = if(pickerDate == null)  "" else formattedDate,
+          label = config.label,
+          placeholder = config.placeholder,
           onValueChange = {},
           colors = inputFieldColors,
           interactionSource = remember { MutableInteractionSource() }
@@ -67,6 +72,7 @@ internal fun MyDatePicker(
         dialogState = dateDialogState,
         buttons = {
             positiveButton("Ok") {
+
                 onDateSelected(pickerDate)
                 dateDialogState.hide()
             }
