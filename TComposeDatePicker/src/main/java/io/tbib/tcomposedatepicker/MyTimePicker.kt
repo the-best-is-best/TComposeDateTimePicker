@@ -2,6 +2,8 @@ package io.tbib.tcomposedatepicker
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -51,11 +53,18 @@ fun MyTimePicker(
 
     OutlinedTextField(
         shape = shape,
-        modifier = modifier,
         readOnly = true,
+        modifier = modifier.width(IntrinsicSize.Max),
         value = if(pickerTime == null) "" else formattedDate,
         label = config.label,
         placeholder = config.placeholder,
+        textStyle = config.style,
+        enabled = config.enable,
+        supportingText =config. supportingText,
+        leadingIcon =config. leadingIcon,
+        trailingIcon =config. trailingIcon,
+        prefix = config.prefix,
+        suffix = config.suffix,
         colors = inputFieldColors,
         onValueChange ={},
         interactionSource = remember { MutableInteractionSource() }

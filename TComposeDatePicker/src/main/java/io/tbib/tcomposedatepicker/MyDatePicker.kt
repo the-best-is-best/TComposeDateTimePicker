@@ -34,7 +34,7 @@ internal fun MyDatePicker(
 
 ){
     var pickerDate by rememberSaveable {
-         mutableStateOf<LocalDate?>(config.displayInitDate)
+         mutableStateOf(config.displayInitDate)
      }
       val formattedDate by remember{
 
@@ -53,6 +53,13 @@ internal fun MyDatePicker(
           readOnly = true,
           value = if(pickerDate == null)  "" else formattedDate,
           label = config.label,
+          textStyle = config.style,
+          enabled = config.enable,
+          supportingText =config. supportingText,
+          leadingIcon =config. leadingIcon,
+          trailingIcon =config. trailingIcon,
+          prefix = config.prefix,
+          suffix = config.suffix,
           placeholder = config.placeholder,
           onValueChange = {},
           colors = inputFieldColors,

@@ -17,8 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.tcomposedatetimepicker.ui.theme.TComposeDateTimePickerTheme
 import io.tbib.tcomposedatepicker.ConfigDatePicker
 import io.tbib.tcomposedatepicker.ConfigDatePicker.Companion.activeDateInFutureOnly
@@ -72,7 +75,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         TDatePicker.ShowTimePicker(
             config = io.tbib.tcomposedatepicker.ConfigTimePicker(
                 placeholder = {
-                    Text("Select Time")
+                    Text("Select Time", style = TextStyle(fontSize = 20.sp, color = Color.Black))
                 }
             ),
            onTimeSelected = {
@@ -85,7 +88,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         TDatePicker.ShowDateTimePicker(
             config = io.tbib.tcomposedatepicker.ConfigDateTimePicker(
                 placeholder = {
-                    Text("Select Date and Time")
+                    Text("Select Date and Time", style = TextStyle(fontSize = 20.sp, color = Color.Black))
                 }
             ),
             onDateTimeSelected ={

@@ -26,7 +26,7 @@ afterEvaluate {
         publications.create<MavenPublication>("release") {
             groupId = "io.github.the-best-is-best"
             artifactId = "compose_date_time_picker"
-            version = "1.0.2"
+            version = "1.0.3"
             from(components["release"])
 
 
@@ -143,8 +143,8 @@ android {
 
 dependencies {
     implementation("androidx.activity:activity-compose:1.8.2")
-    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
-    implementation("androidx.compose.material3:material3:1.2.0-rc01")
+    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
+    implementation("androidx.compose.material3:material3:1.2.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("io.github.vanpra.compose-material-dialogs:datetime:0.9.0")
