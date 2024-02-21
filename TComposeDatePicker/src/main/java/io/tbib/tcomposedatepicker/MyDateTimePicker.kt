@@ -9,10 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerColors
@@ -20,6 +17,9 @@ import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerColors
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import io.tbib.tcomposedatepicker.configs.ConfigButtonDialog
+import io.tbib.tcomposedatepicker.configs.ConfigDateTimePicker
+import io.tbib.tcomposedatepicker.states.DateTimePickerState
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -27,7 +27,9 @@ import java.time.format.DateTimeFormatter
 fun MyDateTimePicker(
     modifier: Modifier,
     onDateTimeSelected: (LocalDateTime?) -> Unit,
-    config:ConfigDateTimePicker,
+    config: ConfigDateTimePicker,
+    state: DateTimePickerState,
+    configButtonDialog: ConfigButtonDialog,
     colorsDate: DatePickerColors,
     colorsTime: TimePickerColors,
     inputFieldColors: TextFieldColors,
@@ -35,12 +37,10 @@ fun MyDateTimePicker(
 
 ){
 
-    var pickerDateTime by rememberSaveable {
-        mutableStateOf(config.displayInitDateTime)
-    }
+
     val formattedDate by remember{
             derivedStateOf {
-                DateTimeFormatter.ofPattern(config.dateConfig.dateFormatPattern + " " + config.timeConfig.timeFormatPattern).format(pickerDateTime?: LocalDateTime.now())
+                DateTimeFormatter.ofPattern(config.dateConfig.dateFormatPattern + " " + config.timeConfig.timeFormatPattern).format(state. pickerDateTime?: LocalDateTime.now())
 
         }
 
@@ -52,12 +52,21 @@ fun MyDateTimePicker(
     MaterialDialog(
         dialogState = dateDialogState,
         buttons = {
-            positiveButton("Ok") {
-                onDateTimeSelected(pickerDateTime)
+            positiveButton(
+                configButtonDialog.buttonOk,
+                textStyle = configButtonDialog.textStyle,
+                res = configButtonDialog.res
+
+            ) {
+                onDateTimeSelected(state.pickerDateTime)
                 timeDialogState.show()
                 dateDialogState.hide()
             }
-            negativeButton("Cancel") {
+            negativeButton(
+                configButtonDialog.buttonCancel,
+                textStyle = configButtonDialog.textStyle,
+                res = configButtonDialog.res
+            ) {
                 dateDialogState.hide()
             }
         }
@@ -71,8 +80,8 @@ fun MyDateTimePicker(
             colors = colorsDate
 
         ) {
-            pickerDateTime = LocalDateTime.now()
-                pickerDateTime = LocalDateTime.of(it, pickerDateTime!!.toLocalTime())
+          state.  pickerDateTime = LocalDateTime.now()
+            state.   pickerDateTime = LocalDateTime.of(it, state. pickerDateTime!!.toLocalTime())
         }
     }
 
@@ -81,7 +90,7 @@ fun MyDateTimePicker(
         dialogState = timeDialogState,
         buttons = {
             positiveButton("Ok") {
-                onDateTimeSelected(pickerDateTime)
+                onDateTimeSelected(state. pickerDateTime)
                 timeDialogState.hide()
             }
             negativeButton("Cancel") {
@@ -95,7 +104,7 @@ fun MyDateTimePicker(
             title = config.timeConfig.title,
             colors = colorsTime
         ) {
-                pickerDateTime = LocalDateTime.of(pickerDateTime!!.toLocalDate(), it)
+            state. pickerDateTime = LocalDateTime.of(state. pickerDateTime!!.toLocalDate(), it)
         }
     }
 
@@ -104,7 +113,7 @@ fun MyDateTimePicker(
         modifier = modifier,
         shape = shape,
         readOnly = true,
-        value = if(pickerDateTime == null) "" else formattedDate,
+        value = if(state. pickerDateTime == null) "" else formattedDate,
         colors = inputFieldColors,
         textStyle = config.style,
         enabled = config.enable,

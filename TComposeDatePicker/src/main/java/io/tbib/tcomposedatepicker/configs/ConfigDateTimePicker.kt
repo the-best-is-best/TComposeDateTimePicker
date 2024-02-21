@@ -1,15 +1,13 @@
-package io.tbib.tcomposedatepicker
+package io.tbib.tcomposedatepicker.configs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
-import java.time.LocalDateTime
 
 class ConfigDateTimePicker(
     val dateConfig: ConfigDatePicker = ConfigDatePicker(),
     val timeConfig: ConfigTimePicker = ConfigTimePicker(),
-    val displayInitDateTime: LocalDateTime? = null,
     val label: @Composable() (() -> Unit)? = null,
     val placeholder: @Composable() (() -> Unit)? = null,
     val style: TextStyle = TextStyle(fontSize = 20.sp, color = Color.Black),
@@ -20,4 +18,5 @@ class ConfigDateTimePicker(
     val suffix: @Composable() (() -> Unit)? = null,
     val enable: Boolean = true,
 
-)
+
+    )

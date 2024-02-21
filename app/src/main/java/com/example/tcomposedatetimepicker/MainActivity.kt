@@ -23,9 +23,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tcomposedatetimepicker.ui.theme.TComposeDateTimePickerTheme
-import io.tbib.tcomposedatepicker.ConfigDatePicker
-import io.tbib.tcomposedatepicker.ConfigDatePicker.Companion.activeDateInFutureOnly
 import io.tbib.tcomposedatepicker.TDatePicker
+import io.tbib.tcomposedatepicker.configs.ConfigButtonDialog
+import io.tbib.tcomposedatepicker.configs.ConfigDatePicker
+import io.tbib.tcomposedatepicker.configs.ConfigDatePicker.Companion.activeDateInFutureOnly
+import io.tbib.tcomposedatepicker.configs.ConfigDateTimePicker
+import io.tbib.tcomposedatepicker.configs.ConfigTimePicker
+import io.tbib.tcomposedatepicker.states.rememberDatePickerStates
+import io.tbib.tcomposedatepicker.states.rememberDateTimePickerStates
+import io.tbib.tcomposedatepicker.states.rememberTimePickerStates
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -51,9 +57,24 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     var dateTime by remember {
         mutableStateOf(LocalDateTime.now())
     }
+    val stateDate = rememberDatePickerStates(
+        initDate = dateTime.toLocalDate(),
+
+    )
+
+    val stateTime = rememberTimePickerStates(
+        initTime  = dateTime.toLocalTime()
+    )
+
+    val stateDateTime = rememberDateTimePickerStates(
+        initDateTime = dateTime
+    )
+
+
 
     Column {
             TDatePicker.ShowDatePicker(
+                state = stateDate,
 
                 config = ConfigDatePicker(
                     placeholder = {
@@ -62,7 +83,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                     label = {
                         Text("Date")
                     },
-                    displayInitDate = LocalDate.now(),
+
                     allowedDateValidator = {activeDateInFutureOnly(it, false)},
                     yearRange = IntRange(LocalDate.now().year, LocalDate.now().year+100),
                 ),
@@ -73,11 +94,20 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             )
         Spacer(modifier =Modifier.height(16.dp))
         TDatePicker.ShowTimePicker(
-            config = io.tbib.tcomposedatepicker.ConfigTimePicker(
+            configButtonDialog = ConfigButtonDialog(
+                textStyle = TextStyle(
+                    fontSize = 14.sp,
+                    letterSpacing = 1.25.sp
+                ),
+                buttonCancel = "الغاء",
+                buttonOk = "تأكيد"
+            ),
+            config = ConfigTimePicker(
                 placeholder = {
                     Text("Select Time", style = TextStyle(fontSize = 20.sp, color = Color.Black))
                 }
             ),
+            state = stateTime,
            onTimeSelected = {
                     dateTime = LocalDateTime.of(dateTime.toLocalDate(), it)
                     Log.d("MainActivity", "Selected time: $it")
@@ -86,11 +116,12 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         TDatePicker.ShowDateTimePicker(
-            config = io.tbib.tcomposedatepicker.ConfigDateTimePicker(
+            config = ConfigDateTimePicker(
                 placeholder = {
                     Text("Select Date and Time", style = TextStyle(fontSize = 20.sp, color = Color.Black))
                 }
             ),
+            state = stateDateTime,
             onDateTimeSelected ={
             dateTime = it
             Log.d("MainActivity", "Selected date and time: $it")

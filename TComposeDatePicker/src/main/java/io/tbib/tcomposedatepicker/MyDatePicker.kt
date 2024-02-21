@@ -10,15 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerColors
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import io.tbib.tcomposedatepicker.configs.ConfigButtonDialog
+import io.tbib.tcomposedatepicker.configs.ConfigDatePicker
+import io.tbib.tcomposedatepicker.states.DatePickerState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -27,19 +27,20 @@ import java.time.format.DateTimeFormatter
 @Composable
 internal fun MyDatePicker(
     modifier: Modifier,
-    config: ConfigDatePicker, onDateSelected:(LocalDate?)->Unit,
+    config: ConfigDatePicker,
+    state: DatePickerState,
+    configButtonDialog: ConfigButtonDialog,
+    onDateSelected:(LocalDate?)->Unit,
     colors : DatePickerColors,
     inputFieldColors: TextFieldColors,
     shape: CornerBasedShape
 
 ){
-    var pickerDate by rememberSaveable {
-         mutableStateOf(config.displayInitDate)
-     }
+
       val formattedDate by remember{
 
               derivedStateOf {
-                  DateTimeFormatter.ofPattern(config.dateFormatPattern).format(pickerDate?: LocalDate.now())
+                  DateTimeFormatter.ofPattern(config.dateFormatPattern).format(state.pickerDate?: LocalDate.now())
 
           }
 
@@ -51,7 +52,7 @@ internal fun MyDatePicker(
           modifier = modifier,
             shape = shape,
           readOnly = true,
-          value = if(pickerDate == null)  "" else formattedDate,
+          value = if(state.pickerDate == null)  "" else formattedDate,
           label = config.label,
           textStyle = config.style,
           enabled = config.enable,
@@ -78,12 +79,21 @@ internal fun MyDatePicker(
     MaterialDialog(
         dialogState = dateDialogState,
         buttons = {
-            positiveButton("Ok") {
 
-                onDateSelected(pickerDate)
+            positiveButton(
+                configButtonDialog.buttonOk,
+                textStyle = configButtonDialog.textStyle,
+                res= configButtonDialog.res
+            ) {
+
+                onDateSelected(state.pickerDate)
                 dateDialogState.hide()
             }
-            negativeButton("Cancel") {
+            negativeButton(
+                configButtonDialog.buttonCancel,
+                textStyle = configButtonDialog.textStyle,
+                res= configButtonDialog.res
+            ) {
                 dateDialogState.hide()
             }
         }
@@ -97,7 +107,7 @@ internal fun MyDatePicker(
             colors = colors
 
         ) {
-            pickerDate = it
+            state.pickerDate = it
         }
     }
 
