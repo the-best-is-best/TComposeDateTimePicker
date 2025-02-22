@@ -40,7 +40,7 @@ tasks.withType<PublishToMavenRepository> {
 }
 
 
-extra["packageNameSpace"] = ""
+extra["packageNameSpace"] = "io.github.tcompose_date_time_picker"
 extra["groupId"] = "com.example"
 extra["artifactId"] = "your-artifact-id"
 extra["version"] = "1.0.0"
@@ -142,6 +142,8 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.kotlinx.datetime)
+
+            implementation(libs.cupertino.adaptive)
 
         }
 

@@ -1,95 +1,69 @@
 package io.github.sample
 
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import io.github.alexzhirkevich.cupertino.adaptive.Theme
 import io.github.sample.theme.AppTheme
-import io.github.sample.theme.LocalThemeIsDark
-import lib.simple.composeapp.generated.resources.*
-import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.resources.vectorResource
+import io.github.tcompose_date_picker.TKDatePicker
+import io.github.tcompose_date_picker.TKDateTimePicker
+import io.github.tcompose_date_picker.TKTimePicker
+import io.github.tcompose_date_picker.config.ConfigDatePicker
+import io.github.tcompose_date_picker.config.ConfigDateTimePicker
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun App() = AppTheme {
+internal fun App() = AppTheme(
+    theme = Theme.Material3,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Text(
-            text = stringResource(Res.string.cyclone),
-            fontFamily = FontFamily(Font(Res.font.IndieFlower_Regular)),
-            style = MaterialTheme.typography.displayLarge
-        )
-
-        var isAnimate by remember { mutableStateOf(false) }
-        val transition = rememberInfiniteTransition()
-        val rotate by transition.animateFloat(
-            initialValue = 0f,
-            targetValue = 360f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1000, easing = LinearEasing)
-            )
-        )
-
-        Image(
-            modifier = Modifier
-                .size(250.dp)
-                .padding(16.dp)
-                .run { if (isAnimate) rotate(rotate) else this },
-            imageVector = vectorResource(Res.drawable.ic_cyclone),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            contentDescription = null
-        )
-
-        ElevatedButton(
-            modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 4.dp)
-                .widthIn(min = 200.dp),
-            onClick = { isAnimate = !isAnimate },
-            content = {
-                Icon(vectorResource(Res.drawable.ic_rotate_right), contentDescription = null)
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(
-                    stringResource(if (isAnimate) Res.string.stop else Res.string.run)
+        TKDateTimePicker(
+            config = ConfigDateTimePicker(
+                dateConfig = ConfigDatePicker(
+                    useAdaptiveDialog = true
                 )
+            ),
+            isDialogOpen = {
+
+            },
+            onDateTimeSelected = {
+                println("date time selected is $it")
             }
         )
 
-        var isDark by LocalThemeIsDark.current
-        val icon = remember(isDark) {
-            if (isDark) Res.drawable.ic_light_mode
-            else Res.drawable.ic_dark_mode
-        }
+        TKDatePicker(
+            isDialogOpen = {
 
-        ElevatedButton(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { isDark = !isDark },
-            content = {
-                Icon(vectorResource(icon), contentDescription = null)
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(stringResource(Res.string.theme))
+            },
+            onDateSelected = {
+                println("date time selected is $it")
             }
         )
 
-        val uriHandler = LocalUriHandler.current
-        TextButton(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { uriHandler.openUri("https://github.com/terrakok") },
-        ) {
-            Text(stringResource(Res.string.open_github))
-        }
+        TKTimePicker(
+            isDialogOpen = {
+
+            },
+            onTimeSelected = {
+                println("date time selected is $it")
+            }
+        )
+
     }
 }

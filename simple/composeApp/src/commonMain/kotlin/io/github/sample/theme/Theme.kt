@@ -1,11 +1,19 @@
 package io.github.sample.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import io.github.alexzhirkevich.cupertino.adaptive.AdaptiveTheme
+import io.github.alexzhirkevich.cupertino.adaptive.CupertinoThemeSpec
+import io.github.alexzhirkevich.cupertino.adaptive.ExperimentalAdaptiveApi
+import io.github.alexzhirkevich.cupertino.adaptive.MaterialThemeSpec
+import io.github.alexzhirkevich.cupertino.adaptive.Theme
 
 private val LightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -73,9 +81,11 @@ private val DarkColorScheme = darkColorScheme(
 
 internal val LocalThemeIsDark = compositionLocalOf { mutableStateOf(true) }
 
+@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 internal fun AppTheme(
-    content: @Composable () -> Unit
+    theme: Theme,
+    content: @Composable () -> Unit,
 ) {
     val systemIsDark = isSystemInDarkTheme()
     val isDarkState = remember { mutableStateOf(systemIsDark) }
@@ -84,10 +94,16 @@ internal fun AppTheme(
     ) {
         val isDark by isDarkState
         SystemAppearance(!isDark)
-        MaterialTheme(
-            colorScheme = if (isDark) DarkColorScheme else LightColorScheme,
-            content = { Surface(content = content) }
+
+        AdaptiveTheme(
+            target = theme,
+            material = MaterialThemeSpec.Default(
+                colorScheme = LightColorScheme,
+            ),
+            cupertino = CupertinoThemeSpec.Default(),
+            content = content
         )
+
     }
 }
 

@@ -1,4 +1,4 @@
-rootProject.name = "lib"
+rootProject.name = "tcomposeDateTimePicker"
 
 pluginManagement {
     repositories {
@@ -30,5 +30,5 @@ dependencyResolutionManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
     }
 }
-include(":lib")
+include(":TComposeDateTimePicker")
 include(":simple:composeApp")

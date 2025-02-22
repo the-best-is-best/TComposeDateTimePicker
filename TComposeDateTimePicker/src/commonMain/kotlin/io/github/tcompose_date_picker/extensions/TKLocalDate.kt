@@ -4,6 +4,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.min
@@ -44,6 +45,10 @@ import kotlin.math.min
     } else {
         resolvePreviousValid(year, monthNumber, dayOfMonth)
     }
+}
+
+fun LocalDate.toEpochMillis(): Long {
+    return this.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
 }
 
  fun resolvePreviousValid(
