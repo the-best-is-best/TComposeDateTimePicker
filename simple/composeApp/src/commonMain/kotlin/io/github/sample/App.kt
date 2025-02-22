@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +20,7 @@ import io.github.tcompose_date_picker.TKDateTimePicker
 import io.github.tcompose_date_picker.TKTimePicker
 import io.github.tcompose_date_picker.config.ConfigDatePicker
 import io.github.tcompose_date_picker.config.ConfigDateTimePicker
+import io.github.tcompose_date_picker.config.ConfigTimePicker
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,6 +59,11 @@ internal fun App() = AppTheme(
         )
 
         TKTimePicker(
+            config = ConfigTimePicker(
+                label = {
+                    Text("alala")
+                }
+            ),
             isDialogOpen = {
 
             },
@@ -67,3 +74,4 @@ internal fun App() = AppTheme(
 
     }
 }
+

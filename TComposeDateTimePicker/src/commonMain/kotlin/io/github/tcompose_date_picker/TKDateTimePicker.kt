@@ -1,7 +1,12 @@
 package io.github.tcompose_date_picker
 
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerColors
@@ -26,6 +31,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
 import io.github.alexzhirkevich.cupertino.adaptive.AdaptiveDatePicker
 import io.github.alexzhirkevich.cupertino.adaptive.ExperimentalAdaptiveApi
@@ -54,11 +61,10 @@ fun TKDateTimePicker(
     dialogConfig: ConfigDialog = ConfigDialog(),
     colorsDate: DatePickerColors = DatePickerDefaults.colors(),
     colorsTime: TimePickerColors = TimePickerDefaults.colors(),
-    textField: (@Composable (MutableInteractionSource) -> Unit)? = null,
+    textField: (@Composable (Modifier) -> Unit)? = null,
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
 
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
@@ -86,7 +92,7 @@ fun TKDateTimePicker(
                 tempTime?.let { (hour, minute) ->
                     LocalDateTime(date.year, date.month, date.dayOfMonth, hour, minute)
                         .formatLocalDateTime(
-                            withoutSeconds = config.timeConfig.showSeconds,
+                            withoutSeconds = true,
                             config.timeConfig.is24Hour
                         )
                 }
@@ -96,8 +102,22 @@ fun TKDateTimePicker(
 
     isDialogOpen(showDatePicker || showTimePicker)
 
-    textField?.invoke(interactionSource) ?: OutlinedTextField(
-        modifier = modifier,
+    textField?.invoke(modifier.width(IntrinsicSize.Max).pointerInput(formattedDateTime) {
+        awaitEachGesture {
+            awaitFirstDown(pass = PointerEventPass.Initial)
+            val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+            if (upEvent != null) {
+                showDatePicker = true
+            }
+        }}) ?: OutlinedTextField(
+        modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedDateTime) {
+            awaitEachGesture {
+                awaitFirstDown(pass = PointerEventPass.Initial)
+                val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                if (upEvent != null) {
+                    showDatePicker = true
+                }
+            }},
         shape = shape,
         readOnly = true,
         value = formattedDateTime,

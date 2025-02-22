@@ -1,7 +1,12 @@
 package io.github.tcompose_date_picker
 
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
@@ -22,6 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
 import io.github.alexzhirkevich.cupertino.adaptive.AdaptiveDatePicker
 import io.github.alexzhirkevich.cupertino.adaptive.ExperimentalAdaptiveApi
@@ -50,7 +57,7 @@ fun TKDatePicker(
     inputFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
-    textField: (@Composable (MutableInteractionSource) -> Unit)? = null, // يمكن تمرير حقل مخصص
+    textField: (@Composable (Modifier) -> Unit)? = null, // يمكن تمرير حقل مخصص
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
 
@@ -65,25 +72,31 @@ fun TKDatePicker(
         yearRange = config.yearRange
     )
 
-    val interactionSource = remember { MutableInteractionSource() }
+   var tempDate by remember { mutableStateOf(config.initDate) }
+    val formattedDate by remember { derivedStateOf { tempDate?.formatLocalDate() ?: "" } }
 
-    val formattedDate by remember { derivedStateOf { config.initDate?.formatLocalDate() ?: "" } }
 
-    // تشغيل التفاعل عند الضغط
-    LaunchedEffect(interactionSource) {
-        interactionSource.interactions.collect { interaction ->
-            if (interaction is PressInteraction.Release) {
-                showDatePicker = true
-            }
-        }
-    }
 
     isDialogOpen(showDatePicker)
 
 
     // ✅ **استخدام `textField` الممرر أو `OutlinedTextField` كافتراضي**
-    textField?.invoke(interactionSource) ?: OutlinedTextField(
-        modifier = modifier,
+    textField?.invoke(modifier.width(IntrinsicSize.Max).pointerInput(formattedDate) {
+        awaitEachGesture {
+            awaitFirstDown(pass = PointerEventPass.Initial)
+            val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+            if (upEvent != null) {
+                showDatePicker = true
+            }
+        }}) ?: OutlinedTextField(
+        modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedDate) {
+            awaitEachGesture {
+                awaitFirstDown(pass = PointerEventPass.Initial)
+                val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                if (upEvent != null) {
+                    showDatePicker = true
+                }
+            }},
         shape = shape,
         readOnly = true,
         value = formattedDate,
@@ -98,7 +111,6 @@ fun TKDatePicker(
         placeholder = config.placeholder,
         onValueChange = {},
         colors = inputFieldColors,
-        interactionSource = interactionSource
     )
 
     if (showDatePicker) {
@@ -115,10 +127,15 @@ fun TKDatePicker(
                         cupertinoDatePickerState.selectedDateMillis.let { millis ->
                             val selectedDate = Instant.fromEpochMilliseconds(millis)
                                 .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            tempDate= selectedDate
                             onDateSelected(selectedDate)
+                            showDatePicker = false
                         }
                     } else {
                         materialDatePickerState.selectedDateMillis?.let { millis ->
+                            tempDate = Instant.fromEpochMilliseconds(millis)
+                                .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            showDatePicker = false
                             val selectedDate = Instant.fromEpochMilliseconds(millis)
                                 .toLocalDateTime(TimeZone.currentSystemDefault()).date
                             onDateSelected(selectedDate)

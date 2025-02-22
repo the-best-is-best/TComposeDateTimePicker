@@ -7,7 +7,6 @@ import androidx.compose.ui.unit.sp
 import kotlinx.datetime.LocalTime
 
 class ConfigTimePicker(
-    val showSeconds: Boolean = false,
     val initTime: LocalTime? = null,
     val title: String = "Select a time",
     val is24Hour: Boolean = false,

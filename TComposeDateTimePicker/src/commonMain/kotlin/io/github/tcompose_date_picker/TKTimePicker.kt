@@ -1,5 +1,8 @@
 package io.github.tcompose_date_picker
 
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -24,6 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.config.ConfigTimePicker
 import io.github.tcompose_date_picker.extensions.formatLocalDateTime
@@ -40,31 +45,46 @@ fun TKTimePicker(
     inputFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
-    textField: (@Composable (MutableInteractionSource) -> Unit)? = null, // دعم TextField مخصص
+    textField: (@Composable (Modifier) -> Unit)? = null
 ) {
     var showTimePicker by remember { mutableStateOf(false) }
-    val timeState = rememberTimePickerState()
-    val interactionSource = remember { MutableInteractionSource() }
-
+    val timeState = rememberTimePickerState(
+        initialHour = config.initTime?.hour ?: 0,
+        initialMinute = config.initTime?.minute ?: 0,
+        is24Hour = config.is24Hour
+    )
+    var tempTime by remember {
+        mutableStateOf(config.initTime?.let { it.hour to it.minute })
+    }
     val formattedTime by remember {
         derivedStateOf {
-            config.initTime?.formatLocalDateTime(use24HourFormat = config.is24Hour) ?: ""
+           if(tempTime == null ) "" else LocalTime(tempTime!!.first, tempTime!!.second).formatLocalDateTime(use24HourFormat = config.is24Hour) ?: ""
         }
     }
 
-    // تشغيل التفاعل عند الضغط
-    LaunchedEffect(interactionSource) {
-        interactionSource.interactions.collect { interaction ->
-            if (interaction is PressInteraction.Release) {
-                showTimePicker = true
-            }
-        }
-    }
+
 
     isDialogOpen(showTimePicker)
     // ✅ **استخدام `textField` الممرر أو `OutlinedTextField` كافتراضي**
-    textField?.invoke(interactionSource) ?: OutlinedTextField(
-        modifier = modifier.width(IntrinsicSize.Max),
+    textField?.invoke(modifier.width(IntrinsicSize.Max).pointerInput(formattedTime) {
+        awaitEachGesture {
+            awaitFirstDown(pass = PointerEventPass.Initial)
+            val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+            if (upEvent != null) {
+                showTimePicker = true
+            }
+        }
+    },) ?: OutlinedTextField(
+        modifier = modifier.width(IntrinsicSize.Max)
+            .pointerInput(formattedTime) {
+                awaitEachGesture {
+                     awaitFirstDown(pass = PointerEventPass.Initial)
+                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                    if (upEvent != null) {
+                        showTimePicker = true
+                    }
+                }
+            },
         shape = shape,
         readOnly = true,
         value = formattedTime,
@@ -79,7 +99,6 @@ fun TKTimePicker(
         suffix = config.suffix,
         colors = inputFieldColors,
         onValueChange = {},
-        interactionSource = interactionSource
     )
 
     if (showTimePicker) {
@@ -92,6 +111,7 @@ fun TKTimePicker(
             },
             confirmButton = {
                 TextButton(onClick = {
+                    tempTime = Pair(timeState.hour, timeState.minute)
                     onTimeSelected(LocalTime(timeState.hour, timeState.minute))
                     showTimePicker = false
                 }) {

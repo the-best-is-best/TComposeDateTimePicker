@@ -38,7 +38,7 @@ import kotlinx.datetime.toLocalDateTime
 
 
 fun LocalTime.formatLocalDateTime(
-    withoutSeconds: Boolean = true,
+    withoutSeconds: Boolean = false,
     use24HourFormat: Boolean = false
 ): String {
 
