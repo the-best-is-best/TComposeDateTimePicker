@@ -41,19 +41,21 @@ tasks.withType<PublishToMavenRepository> {
 
 
 extra["packageNameSpace"] = "io.github.tcompose_date_time_picker"
-extra["groupId"] = "com.example"
-extra["artifactId"] = "your-artifact-id"
-extra["version"] = "1.0.0"
-extra["packageName"] = ""
-extra["packageUrl"] = ""
-extra["packageDescription"] = ""
+extra["groupId"] = "io.github.the-best-is-best"
+extra["artifactId"] = "compose_date_time_picker"
+extra["version"] = "3.0.0"
+extra["packageName"] = "TKCompose Date Picker "
+extra["packageUrl"] = "https://github.com/the-best-is-best/TComposeDateTimePicker"
+extra["packageDescription"] =
+    "Compose Date Picker is library for Compose multi-platform to make date or time picker and date time\n" +
+            "picker."
 extra["system"] = "GITHUB"
-extra["issueUrl"] = ""
-extra["connectionGit"] = ".git"
+extra["issueUrl"] = "https://github.com/the-best-is-best/TComposeDateTimePicker/issues"
+extra["connectionGit"] = "https://github.com/the-best-is-best/TComposeDateTimePicker.git"
 
-extra["developerName"] = ""
-extra["developerNameId"] = ""
-extra["developerEmail"] = ""
+extra["developerName"] = "Michelle Raouf"
+extra["developerNameId"] = "MichelleRaouf"
+extra["developerEmail"] = "eng.michelle.raouf@gmail.com"
 
 
 mavenPublishing {
@@ -63,7 +65,7 @@ mavenPublishing {
         extra["version"].toString()
     )
 
-    publishToMavenCentral(SonatypeHost.S01)
+    publishToMavenCentral(SonatypeHost.S01, true)
     signAllPublications()
 
     pom {
