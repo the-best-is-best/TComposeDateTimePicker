@@ -1,34 +1,87 @@
-# Compose Multiplatform Application
+<h1 align="center">Compose Date Time Picker</h1><br>
 
-## Before running!
- - check your system with [KDoctor](https://github.com/Kotlin/kdoctor)
- - install JDK 17 or higher on your machine
- - add `local.properties` file to the project root and set a path to Android SDK there
+## 📌 Overview
 
-### Android
-To run the application on android device/emulator:  
- - open project in Android Studio and run imported android run configuration
+Compose Date Picker is library for Compose multi-platform to make date or time picker and date time
+picker.
 
-To build the application bundle:
- - run `./gradlew :composeApp:assembleDebug`
- - find `.apk` file in `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
-Run android simulator UI tests: `./gradlew :composeApp:pixel5Check`
+<div align="center">
+<a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
+<a href="https://android-arsenal.com/api?level=21" rel="nofollow">
+    <img alt="API" src="https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat" style="max-width: 100%;">
+</a>
+<img src="https://img.shields.io/badge/Platform-Android-brightgreen.svg?logo=android" alt="Badge Android" />
+  <img src="https://img.shields.io/badge/Platform-iOS%20%2F%20macOS-lightgrey.svg?logo=apple" alt="Badge iOS" />
+  <img src="https://img.shields.io/badge/Platform-JVM-8A2BE2.svg?logo=openjdk" alt="Badge JVM" />
+    <img src="https://img.shields.io/badge/Platform-WASM%20%2F%20JS-yellow.svg?logo=javascript" alt="Badge JS" />
+<a href="https://github.com/the-best-is-best/"><img alt="Profile" src="https://img.shields.io/badge/github-%23181717.svg?&style=for-the-badge&logo=github&logoColor=white" height="20"/></a>
 
-### Desktop
-Run the desktop application: `./gradlew :composeApp:run`
-Run desktop UI tests: `./gradlew :composeApp:jvmTest`
+</div>
 
-### iOS
-To run the application on iPhone device/simulator:
- - Open `iosApp/iosApp.xcproject` in Xcode and run standard configuration
- - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
-Run iOS simulator UI tests: `./gradlew :composeApp:iosSimulatorArm64Test`
+## Download
 
-### JS Browser (Experimental)
-Run the browser application: `./gradlew :composeApp:jsBrowserDevelopmentRun --continue`
-Run browser UI tests: `./gradlew :composeApp:jsBrowserTest`
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.the-best-is-best/compose_date_time_picker)](https://central.sonatype.com/artifact/io.github.the-best-is-best/compose_date_time_picker)
 
-### Wasm Browser (Alpha)
-Run the browser application: `./gradlew :composeApp:wasmJsBrowserDevelopmentRun --continue`
-Run browser UI tests: `./gradlew :composeApp:wasmJsBrowserTest`
+Compose Date Time Picker is available on `mavenCentral()`.
 
+```kotlin
+implementation("io.github.the-best-is-best:compose_date_time_picker:3.0.0")
+```
+
+## How to use
+
+### First
+
+```gradle.kts
+   implementation("org.jetbrains.kotlinx:kotlinx-datetime:<version>")
+```
+
+### Second
+
+```kotlin
+ TKDateTimePicker(
+
+    textFieldType = TextFieldType.Filled,
+    config = ConfigDateTimePicker(
+        label = {
+            Text("Select date and time")
+        }
+
+    ),
+    isDialogOpen = {
+
+    },
+    onDateTimeSelected = {
+        println("date time selected is ${it?.toIsoStringWithOffset()}")
+    }
+)
+
+TKDatePicker(
+    config = ConfigDatePicker(
+        label = {
+            Text("Select Date")
+        }
+
+    ),
+    isDialogOpen = {
+
+    },
+    onDateSelected = {
+        println("date time selected is $it")
+    }
+)
+
+TKTimePicker(
+    config = ConfigTimePicker(
+        label = {
+            Text("Time")
+        }
+    ),
+    isDialogOpen = {
+
+    },
+    onTimeSelected = {
+        println("date time selected is $it")
+    }
+)
+```
