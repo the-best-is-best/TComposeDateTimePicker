@@ -11,7 +11,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
@@ -28,6 +30,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.config.ConfigTimePicker
+import io.github.tcompose_date_picker.config.TextFieldType
 import io.github.tcompose_date_picker.extensions.formatLocalDateTime
 import kotlinx.datetime.LocalTime
 
@@ -39,10 +42,11 @@ fun TKTimePicker(
     dialogConfig: ConfigDialog = ConfigDialog(),
     onTimeSelected: (LocalTime?) -> Unit,
     colors: TimePickerColors = TimePickerDefaults.colors(),
-    inputFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
+    inputFieldColors: TextFieldColors? = null,
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
-    textField: (@Composable (Modifier) -> Unit)? = null
+    textField: (@Composable (Modifier) -> Unit)? = null,
+    textFieldType: TextFieldType = TextFieldType.Outlined
 ) {
     var showTimePicker by remember { mutableStateOf(false) }
     val timeState = rememberTimePickerState(
@@ -62,10 +66,13 @@ fun TKTimePicker(
         }
     }
 
-
-
     isDialogOpen(showTimePicker)
-    // ✅ **استخدام `textField` الممرر أو `OutlinedTextField` كافتراضي**
+
+    val resolvedColors = when (textFieldType) {
+        TextFieldType.Outlined -> inputFieldColors ?: OutlinedTextFieldDefaults.colors()
+        TextFieldType.Filled -> inputFieldColors ?: TextFieldDefaults.colors()
+    }
+
     textField?.invoke(modifier.width(IntrinsicSize.Max).pointerInput(formattedTime) {
         awaitEachGesture {
             awaitFirstDown(pass = PointerEventPass.Initial)
@@ -74,37 +81,63 @@ fun TKTimePicker(
                 showTimePicker = true
             }
         }
-    },) ?: OutlinedTextField(
-        modifier = modifier.width(IntrinsicSize.Max)
-            .pointerInput(formattedTime) {
+    }) ?: when (textFieldType) {
+        TextFieldType.Outlined -> OutlinedTextField(
+            modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedTime) {
                 awaitEachGesture {
-                     awaitFirstDown(pass = PointerEventPass.Initial)
+                    awaitFirstDown(pass = PointerEventPass.Initial)
                     val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
                     if (upEvent != null) {
                         showTimePicker = true
                     }
                 }
             },
-        shape = shape,
-        readOnly = true,
-        value = formattedTime,
-        label = config.label,
-        placeholder = config.placeholder,
-        textStyle = config.style,
-        enabled = config.enable,
-        supportingText = config.supportingText,
-        leadingIcon = config.leadingIcon,
-        trailingIcon = config.trailingIcon,
-        prefix = config.prefix,
-        suffix = config.suffix,
-        colors = inputFieldColors,
-        onValueChange = {},
-    )
+            shape = shape,
+            readOnly = true,
+            value = formattedTime,
+            label = config.label,
+            placeholder = config.placeholder,
+            textStyle = config.style,
+            enabled = config.enable,
+            supportingText = config.supportingText,
+            leadingIcon = config.leadingIcon,
+            trailingIcon = config.trailingIcon,
+            prefix = config.prefix,
+            suffix = config.suffix,
+            colors = resolvedColors,
+            onValueChange = {},
+        )
+
+        TextFieldType.Filled -> TextField(
+            modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedTime) {
+                awaitEachGesture {
+                    awaitFirstDown(pass = PointerEventPass.Initial)
+                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                    if (upEvent != null) {
+                        showTimePicker = true
+                    }
+                }
+            },
+            shape = shape,
+            readOnly = true,
+            value = formattedTime,
+            label = config.label,
+            placeholder = config.placeholder,
+            textStyle = config.style,
+            enabled = config.enable,
+            supportingText = config.supportingText,
+            leadingIcon = config.leadingIcon,
+            trailingIcon = config.trailingIcon,
+            prefix = config.prefix,
+            suffix = config.suffix,
+            colors = resolvedColors,
+            onValueChange = {},
+        )
+    }
 
     if (showTimePicker) {
         AlertDialog(
             modifier = dialogConfig.modifier,
-
             onDismissRequest = {
                 showTimePicker = false
                 isDialogOpen(false)
@@ -126,7 +159,6 @@ fun TKTimePicker(
             title = { Text(config.title) },
             text = {
                 TimePicker(
-
                     modifier = dialogConfig.timeDialogModifier,
                     state = timeState,
                     colors = colors

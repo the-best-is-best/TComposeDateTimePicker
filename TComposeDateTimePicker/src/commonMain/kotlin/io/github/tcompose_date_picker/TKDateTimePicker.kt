@@ -15,6 +15,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
@@ -32,6 +35,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import io.github.tcompose_date_picker.config.ConfigDateTimePicker
 import io.github.tcompose_date_picker.config.ConfigDialog
+import io.github.tcompose_date_picker.config.TextFieldType
 import io.github.tcompose_date_picker.extensions.formatLocalDateTime
 import io.github.tcompose_date_picker.extensions.now
 import io.github.tcompose_date_picker.extensions.toEpochMillis
@@ -42,6 +46,7 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TKDateTimePicker(
@@ -51,11 +56,11 @@ fun TKDateTimePicker(
     dialogConfig: ConfigDialog = ConfigDialog(),
     colorsDate: DatePickerColors = DatePickerDefaults.colors(),
     colorsTime: TimePickerColors = TimePickerDefaults.colors(),
-    textField: (@Composable (Modifier) -> Unit)? = null,
+    inputFieldColors: TextFieldColors? = null,
+    textFieldType: TextFieldType = TextFieldType.Outlined,
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
 ) {
-
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     var tempDate by remember { mutableStateOf<LocalDate?>(null) }
@@ -88,38 +93,57 @@ fun TKDateTimePicker(
 
     isDialogOpen(showDatePicker || showTimePicker)
 
-    textField?.invoke(modifier.width(IntrinsicSize.Max).pointerInput(formattedDateTime) {
+    val inputModifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedDateTime) {
         awaitEachGesture {
             awaitFirstDown(pass = PointerEventPass.Initial)
             val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
             if (upEvent != null) {
                 showDatePicker = true
             }
-        }}) ?: OutlinedTextField(
-        modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedDateTime) {
-            awaitEachGesture {
-                awaitFirstDown(pass = PointerEventPass.Initial)
-                val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                if (upEvent != null) {
-                    showDatePicker = true
-                }
-            }},
-        shape = shape,
-        readOnly = true,
-        value = formattedDateTime,
-        colors = OutlinedTextFieldDefaults.colors(),
-        textStyle = config.style,
-        enabled = config.enable,
-        supportingText = config.supportingText,
-        leadingIcon = config.leadingIcon,
-        trailingIcon = config.trailingIcon,
-        prefix = config.prefix,
-        suffix = config.suffix,
-        label = config.label,
-        placeholder = config.placeholder,
-        onValueChange = {},
+        }
+    }
+    val resolvedColors = when (textFieldType) {
+        TextFieldType.Outlined -> inputFieldColors ?: OutlinedTextFieldDefaults.colors()
+        TextFieldType.Filled -> inputFieldColors ?: TextFieldDefaults.colors()
+    }
 
+    when (textFieldType) {
+        TextFieldType.Outlined -> OutlinedTextField(
+            modifier = inputModifier,
+            shape = shape,
+            readOnly = true,
+            value = formattedDateTime,
+            colors = resolvedColors,
+            textStyle = config.style,
+            enabled = config.enable,
+            supportingText = config.supportingText,
+            leadingIcon = config.leadingIcon,
+            trailingIcon = config.trailingIcon,
+            prefix = config.prefix,
+            suffix = config.suffix,
+            label = config.label,
+            placeholder = config.placeholder,
+            onValueChange = {},
         )
+
+        TextFieldType.Filled -> TextField(
+            modifier = inputModifier,
+            shape = shape,
+            readOnly = true,
+            value = formattedDateTime,
+            colors = resolvedColors,
+            textStyle = config.style,
+            enabled = config.enable,
+            supportingText = config.supportingText,
+            leadingIcon = config.leadingIcon,
+            trailingIcon = config.trailingIcon,
+            prefix = config.prefix,
+            suffix = config.suffix,
+            label = config.label,
+            placeholder = config.placeholder,
+            onValueChange = {},
+        )
+    }
 
     if (showDatePicker) {
         DatePickerDialog(
@@ -127,14 +151,12 @@ fun TKDateTimePicker(
             onDismissRequest = { showDatePicker = false; isDialogOpen(false) },
             confirmButton = {
                 TextButton(onClick = {
-
                     materialDatePickerState.selectedDateMillis?.let { millis ->
-                            tempDate = Instant.fromEpochMilliseconds(millis)
-                                .toLocalDateTime(TimeZone.currentSystemDefault()).date
-                            showDatePicker = false
-                            showTimePicker = true
-                        }
-
+                        tempDate = Instant.fromEpochMilliseconds(millis)
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                        showDatePicker = false
+                        showTimePicker = true
+                    }
                 }) {
                     Text(dialogConfig.buttonNext, style = dialogConfig.textOKStyle)
                 }
@@ -145,39 +167,37 @@ fun TKDateTimePicker(
                 }
             },
             content = {
-
                 DatePicker(
-
-                        title = dialogConfig.title,
-                        headline = dialogConfig.headline,
-                        modifier = dialogConfig.dateDialogModifier,
-                        dateFormatter = config.dateConfig.dateFormatter
-                            ?: remember { DatePickerDefaults.dateFormatter() },
-                        state = materialDatePickerState,
-                        colors = colorsDate,
-                        showModeToggle = true
-                    )
-
+                    title = dialogConfig.title,
+                    headline = dialogConfig.headline,
+                    modifier = dialogConfig.dateDialogModifier,
+                    dateFormatter = config.dateConfig.dateFormatter
+                        ?: remember { DatePickerDefaults.dateFormatter() },
+                    state = materialDatePickerState,
+                    colors = colorsDate,
+                    showModeToggle = true
+                )
             }
         )
     }
 
     if (showTimePicker) {
-
-
         AlertDialog(
             modifier = dialogConfig.modifier,
             onDismissRequest = { showTimePicker = false; isDialogOpen(false) },
             confirmButton = {
                 TextButton(onClick = {
                     tempDate?.let { date ->
-                        val selectedTime = Pair(timePickerState.hour, timePickerState.minute)
-                        tempTime = selectedTime
-                        val selectedDateTime = LocalDateTime(
-                            date.year, date.month, date.dayOfMonth,
-                            selectedTime.first, selectedTime.second
+                        tempTime = timePickerState.hour to timePickerState.minute
+                        onDateTimeSelected(
+                            LocalDateTime(
+                                date.year,
+                                date.month,
+                                date.dayOfMonth,
+                                tempTime!!.first,
+                                tempTime!!.second
+                            )
                         )
-                        onDateTimeSelected(selectedDateTime)
                         showTimePicker = false
                         isDialogOpen(false)
                     }

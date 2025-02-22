@@ -17,8 +17,10 @@ import io.github.sample.theme.AppTheme
 import io.github.tcompose_date_picker.TKDatePicker
 import io.github.tcompose_date_picker.TKDateTimePicker
 import io.github.tcompose_date_picker.TKTimePicker
+import io.github.tcompose_date_picker.config.ConfigDatePicker
 import io.github.tcompose_date_picker.config.ConfigDateTimePicker
 import io.github.tcompose_date_picker.config.ConfigTimePicker
+import io.github.tcompose_date_picker.config.TextFieldType
 import io.github.tcompose_date_picker.extensions.toIsoStringWithOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,7 +35,12 @@ internal fun App() = AppTheme {
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         TKDateTimePicker(
+
+            textFieldType = TextFieldType.Filled,
             config = ConfigDateTimePicker(
+                label = {
+                    Text("Select date and time")
+                }
 
             ),
             isDialogOpen = {
@@ -45,6 +52,12 @@ internal fun App() = AppTheme {
         )
 
         TKDatePicker(
+            config = ConfigDatePicker(
+                label = {
+                    Text("Select Date")
+                }
+
+            ),
             isDialogOpen = {
 
             },

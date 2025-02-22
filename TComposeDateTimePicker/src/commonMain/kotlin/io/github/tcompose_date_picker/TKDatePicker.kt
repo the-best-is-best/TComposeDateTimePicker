@@ -14,7 +14,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -28,6 +30,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import io.github.tcompose_date_picker.config.ConfigDatePicker
 import io.github.tcompose_date_picker.config.ConfigDialog
+import io.github.tcompose_date_picker.config.TextFieldType
 import io.github.tcompose_date_picker.extensions.formatLocalDate
 import io.github.tcompose_date_picker.extensions.toEpochMillis
 import kotlinx.datetime.Instant
@@ -44,10 +47,10 @@ fun TKDatePicker(
     dialogConfig: ConfigDialog = ConfigDialog(),
     onDateSelected: (LocalDate?) -> Unit,
     colors: DatePickerColors = DatePickerDefaults.colors(),
-    inputFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
+    inputFieldColors: TextFieldColors? = null,
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
-    textField: (@Composable (Modifier) -> Unit)? = null, // يمكن تمرير حقل مخصص
+    textFieldType: TextFieldType = TextFieldType.Outlined, // اختيار النوع
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
 
@@ -64,39 +67,65 @@ fun TKDatePicker(
 
     isDialogOpen(showDatePicker)
 
-
+    val resolvedColors = when (textFieldType) {
+        TextFieldType.Outlined -> inputFieldColors ?: OutlinedTextFieldDefaults.colors()
+        TextFieldType.Filled -> inputFieldColors ?: TextFieldDefaults.colors()
+    }
     // ✅ **استخدام `textField` الممرر أو `OutlinedTextField` كافتراضي**
-    textField?.invoke(modifier.width(IntrinsicSize.Max).pointerInput(formattedDate) {
-        awaitEachGesture {
-            awaitFirstDown(pass = PointerEventPass.Initial)
-            val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-            if (upEvent != null) {
-                showDatePicker = true
-            }
-        }}) ?: OutlinedTextField(
-        modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedDate) {
-            awaitEachGesture {
-                awaitFirstDown(pass = PointerEventPass.Initial)
-                val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                if (upEvent != null) {
-                    showDatePicker = true
+    when (textFieldType) {
+        TextFieldType.Outlined -> OutlinedTextField(
+            modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedDate) {
+                awaitEachGesture {
+                    awaitFirstDown(pass = PointerEventPass.Initial)
+                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                    if (upEvent != null) {
+                        showDatePicker = true
+                    }
                 }
-            }},
-        shape = shape,
-        readOnly = true,
-        value = formattedDate,
-        label = config.label,
-        textStyle = config.style,
-        enabled = config.enable,
-        supportingText = config.supportingText,
-        leadingIcon = config.leadingIcon,
-        trailingIcon = config.trailingIcon,
-        prefix = config.prefix,
-        suffix = config.suffix,
-        placeholder = config.placeholder,
-        onValueChange = {},
-        colors = inputFieldColors,
-    )
+            },
+            shape = shape,
+            readOnly = true,
+            value = formattedDate,
+            label = config.label,
+            textStyle = config.style,
+            enabled = config.enable,
+            supportingText = config.supportingText,
+            leadingIcon = config.leadingIcon,
+            trailingIcon = config.trailingIcon,
+            prefix = config.prefix,
+            suffix = config.suffix,
+            placeholder = config.placeholder,
+            onValueChange = {},
+            colors = resolvedColors,
+        )
+
+        TextFieldType.Filled -> TextField(
+            modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedDate) {
+                awaitEachGesture {
+                    awaitFirstDown(pass = PointerEventPass.Initial)
+                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                    if (upEvent != null) {
+                        showDatePicker = true
+                    }
+                }
+            },
+            shape = shape,
+            readOnly = true,
+            value = formattedDate,
+            label = config.label,
+            textStyle = config.style,
+            enabled = config.enable,
+            supportingText = config.supportingText,
+            leadingIcon = config.leadingIcon,
+            trailingIcon = config.trailingIcon,
+            prefix = config.prefix,
+            suffix = config.suffix,
+            placeholder = config.placeholder,
+            onValueChange = {},
+            colors = resolvedColors,
+        )
+    }
+
 
     if (showDatePicker) {
         DatePickerDialog(
