@@ -3,8 +3,6 @@ package io.github.tcompose_date_picker
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
@@ -23,7 +21,6 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,10 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
-import io.github.alexzhirkevich.cupertino.adaptive.AdaptiveDatePicker
-import io.github.alexzhirkevich.cupertino.adaptive.ExperimentalAdaptiveApi
-import io.github.alexzhirkevich.cupertino.rememberCupertinoDatePickerState
 import io.github.tcompose_date_picker.config.ConfigDateTimePicker
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.extensions.formatLocalDateTime
@@ -49,10 +42,7 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-@OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalAdaptiveApi::class,
-    ExperimentalCupertinoApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TKDateTimePicker(
     modifier: Modifier = Modifier,
@@ -75,11 +65,7 @@ fun TKDateTimePicker(
         yearRange = config.dateConfig.yearRange,
         initialSelectedDateMillis = config.dateConfig.initDate?.toEpochMillis()
     )
-    val cupertinoDatePickerState = rememberCupertinoDatePickerState(
-        yearRange = config.dateConfig.yearRange,
-        initialSelectedDateMillis = config.dateConfig.initDate?.toEpochMillis() ?: LocalDate.now()
-            .toEpochMillis()
-    )
+
     val timePickerState = rememberTimePickerState(
         initialHour = config.timeConfig.initTime?.hour ?: LocalTime.now().hour,
         initialMinute = config.timeConfig.initTime?.minute ?: LocalTime.now().minute,
@@ -132,16 +118,8 @@ fun TKDateTimePicker(
         label = config.label,
         placeholder = config.placeholder,
         onValueChange = {},
-        interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
-            LaunchedEffect(interactionSource) {
-                interactionSource.interactions.collect { interaction ->
-                    if (interaction is PressInteraction.Release) {
-                        showDatePicker = true
-                    }
-                }
-            }
-        }
-    )
+
+        )
 
     if (showDatePicker) {
         DatePickerDialog(
@@ -149,21 +127,14 @@ fun TKDateTimePicker(
             onDismissRequest = { showDatePicker = false; isDialogOpen(false) },
             confirmButton = {
                 TextButton(onClick = {
-                    if (config.dateConfig.useAdaptiveDialog) {
-                        cupertinoDatePickerState.selectedDateMillis.let { millis ->
+
+                    materialDatePickerState.selectedDateMillis?.let { millis ->
                             tempDate = Instant.fromEpochMilliseconds(millis)
                                 .toLocalDateTime(TimeZone.currentSystemDefault()).date
                             showDatePicker = false
                             showTimePicker = true
                         }
-                    } else {
-                        materialDatePickerState.selectedDateMillis?.let { millis ->
-                            tempDate = Instant.fromEpochMilliseconds(millis)
-                                .toLocalDateTime(TimeZone.currentSystemDefault()).date
-                            showDatePicker = false
-                            showTimePicker = true
-                        }
-                    }
+
                 }) {
                     Text(dialogConfig.buttonNext, style = dialogConfig.textOKStyle)
                 }
@@ -174,17 +145,8 @@ fun TKDateTimePicker(
                 }
             },
             content = {
-                if (config.dateConfig.useAdaptiveDialog)
-                    AdaptiveDatePicker(
-                        modifier = dialogConfig.dateDialogModifier,
-//                    dateFormatter = config.dateConfig.dateFormatter
-//                        ?: remember { DatePickerDefaults.dateFormatter() },
-                        state = cupertinoDatePickerState,
-//                    colors = colorsDate,
-//                    showModeToggle = false
-                    )
-                else {
-                    DatePicker(
+
+                DatePicker(
 
                         title = dialogConfig.title,
                         headline = dialogConfig.headline,
@@ -195,7 +157,7 @@ fun TKDateTimePicker(
                         colors = colorsDate,
                         showModeToggle = true
                     )
-                }
+
             }
         )
     }

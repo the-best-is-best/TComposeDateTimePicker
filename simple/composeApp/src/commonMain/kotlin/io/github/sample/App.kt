@@ -13,20 +13,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.alexzhirkevich.cupertino.adaptive.Theme
 import io.github.sample.theme.AppTheme
 import io.github.tcompose_date_picker.TKDatePicker
 import io.github.tcompose_date_picker.TKDateTimePicker
 import io.github.tcompose_date_picker.TKTimePicker
-import io.github.tcompose_date_picker.config.ConfigDatePicker
 import io.github.tcompose_date_picker.config.ConfigDateTimePicker
 import io.github.tcompose_date_picker.config.ConfigTimePicker
+import io.github.tcompose_date_picker.extensions.toIsoStringWithOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun App() = AppTheme(
-    theme = Theme.Material3,
-) {
+internal fun App() = AppTheme {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -37,15 +34,13 @@ internal fun App() = AppTheme(
     ) {
         TKDateTimePicker(
             config = ConfigDateTimePicker(
-                dateConfig = ConfigDatePicker(
-                    useAdaptiveDialog = true
-                )
+
             ),
             isDialogOpen = {
 
             },
             onDateTimeSelected = {
-                println("date time selected is $it")
+                println("date time selected is ${it?.toIsoStringWithOffset()}")
             }
         )
 
@@ -61,7 +56,7 @@ internal fun App() = AppTheme(
         TKTimePicker(
             config = ConfigTimePicker(
                 label = {
-                    Text("alala")
+                    Text("Time")
                 }
             ),
             isDialogOpen = {

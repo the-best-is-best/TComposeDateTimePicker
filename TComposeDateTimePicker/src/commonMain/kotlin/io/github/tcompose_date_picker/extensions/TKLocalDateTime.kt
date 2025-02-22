@@ -6,7 +6,10 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.offsetAt
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.math.abs
 import kotlin.time.DurationUnit
 import kotlin.time.DurationUnit.DAYS
 import kotlin.time.DurationUnit.HOURS
@@ -109,4 +112,34 @@ fun LocalDateTime.formatLocalDateTime(
     val second = if (withoutSeconds) "" else ":${this.second.toString().padStart(2, '0')}"
 
     return "$day/$month/$year $hour:$minute$second$amPm"
+}
+
+
+fun LocalDateTime.toIsoString(): String {
+    val year = this.year.toString().padStart(4, '0')
+    val month = this.monthNumber.toString().padStart(2, '0')
+    val day = this.dayOfMonth.toString().padStart(2, '0')
+    val hour = this.hour.toString().padStart(2, '0')
+    val minute = this.minute.toString().padStart(2, '0')
+    val second = this.second.toString().padStart(2, '0')
+    val nano = this.nanosecond.toString().padStart(9, '0').trimEnd('0')
+
+    return if (nano.isNotEmpty()) {
+        "$year-$month-$day" + "T$hour:$minute:$second.$nano"
+    } else {
+        "$year-$month-$day" + "T$hour:$minute:$second"
+    }
+}
+
+fun LocalDateTime.toIsoStringWithOffset(): String {
+    val instant = this.toInstant(TimeZone.currentSystemDefault())
+    val offset = TimeZone.currentSystemDefault().offsetAt(instant)
+    val offsetHours = offset.totalSeconds / 3600
+    val offsetMinutes = (offset.totalSeconds % 3600) / 60
+    val offsetSign = if (offsetHours >= 0) "+" else "-"
+
+    val formattedOffset = offsetSign +
+            abs(offsetHours).toString().padStart(2, '0') + ":" +
+            abs(offsetMinutes).toString().padStart(2, '0')
+    return "${this.toIsoString()}$formattedOffset"
 }

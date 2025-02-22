@@ -143,7 +143,6 @@ kotlin {
 
             implementation(libs.kotlinx.datetime)
 
-            implementation(libs.cupertino.adaptive)
 
         }
 

@@ -3,8 +3,6 @@ package io.github.tcompose_date_picker
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
@@ -19,7 +17,6 @@ import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,7 +55,10 @@ fun TKTimePicker(
     }
     val formattedTime by remember {
         derivedStateOf {
-           if(tempTime == null ) "" else LocalTime(tempTime!!.first, tempTime!!.second).formatLocalDateTime(use24HourFormat = config.is24Hour) ?: ""
+            if (tempTime == null) "" else LocalTime(
+                tempTime!!.first,
+                tempTime!!.second
+            ).formatLocalDateTime(use24HourFormat = config.is24Hour)
         }
     }
 

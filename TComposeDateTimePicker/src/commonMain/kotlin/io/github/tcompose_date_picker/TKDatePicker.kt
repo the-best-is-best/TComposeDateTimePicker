@@ -3,8 +3,6 @@ package io.github.tcompose_date_picker
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DatePicker
@@ -19,7 +17,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,24 +26,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
-import io.github.alexzhirkevich.cupertino.adaptive.AdaptiveDatePicker
-import io.github.alexzhirkevich.cupertino.adaptive.ExperimentalAdaptiveApi
-import io.github.alexzhirkevich.cupertino.rememberCupertinoDatePickerState
 import io.github.tcompose_date_picker.config.ConfigDatePicker
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.extensions.formatLocalDate
-import io.github.tcompose_date_picker.extensions.now
 import io.github.tcompose_date_picker.extensions.toEpochMillis
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-@OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalAdaptiveApi::class,
-    ExperimentalCupertinoApi::class
-)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TKDatePicker(
     modifier: Modifier = Modifier,
@@ -64,11 +54,6 @@ fun TKDatePicker(
 
     val materialDatePickerState = rememberDatePickerState(
         initialSelectedDateMillis = config.initDate?.toEpochMillis(),
-        yearRange = config.yearRange
-    )
-    val cupertinoDatePickerState = rememberCupertinoDatePickerState(
-        initialSelectedDateMillis = config.initDate?.toEpochMillis() ?: LocalDate.now()
-            .toEpochMillis(),
         yearRange = config.yearRange
     )
 
@@ -123,16 +108,8 @@ fun TKDatePicker(
 
             confirmButton = {
                 TextButton(onClick = {
-                    if (config.useAdaptiveDialog) {
-                        cupertinoDatePickerState.selectedDateMillis.let { millis ->
-                            val selectedDate = Instant.fromEpochMilliseconds(millis)
-                                .toLocalDateTime(TimeZone.currentSystemDefault()).date
-                            tempDate= selectedDate
-                            onDateSelected(selectedDate)
-                            showDatePicker = false
-                        }
-                    } else {
-                        materialDatePickerState.selectedDateMillis?.let { millis ->
+
+                    materialDatePickerState.selectedDateMillis?.let { millis ->
                             tempDate = Instant.fromEpochMilliseconds(millis)
                                 .toLocalDateTime(TimeZone.currentSystemDefault()).date
                             showDatePicker = false
@@ -140,7 +117,7 @@ fun TKDatePicker(
                                 .toLocalDateTime(TimeZone.currentSystemDefault()).date
                             onDateSelected(selectedDate)
                         }
-                    }
+
                 }) {
                     Text(dialogConfig.buttonOk, style = dialogConfig.textOKStyle)
                 }
@@ -154,14 +131,7 @@ fun TKDatePicker(
                 }
             },
             content = {
-                if (config.useAdaptiveDialog) {
-                    AdaptiveDatePicker(
-                        modifier = dialogConfig.dateDialogModifier,
-                        state = cupertinoDatePickerState,
 
-                        )
-
-                } else {
                     DatePicker(
                         modifier = dialogConfig.dateDialogModifier,
                         title = dialogConfig.title,
@@ -172,7 +142,7 @@ fun TKDatePicker(
                         colors = colors,
                         showModeToggle = true
                     )
-                }
+
             }
 
         )

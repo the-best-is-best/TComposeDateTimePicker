@@ -49,7 +49,6 @@ kotlin {
 
             implementation(project(":TComposeDateTimePicker"))
 
-            implementation(libs.cupertino.adaptive)
             implementation(libs.kotlinx.datetime)
         }
 

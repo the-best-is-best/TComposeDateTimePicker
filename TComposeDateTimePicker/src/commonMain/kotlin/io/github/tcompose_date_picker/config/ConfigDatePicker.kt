@@ -13,7 +13,6 @@ import io.github.tcompose_date_picker.extensions.now
 import kotlinx.datetime.LocalDate
 
 class ConfigDatePicker @OptIn(ExperimentalMaterial3Api::class) constructor(
-    val useAdaptiveDialog: Boolean = false,
     val dateFormatter: DatePickerFormatter? = null,
     val initDate: LocalDate? = null,
     val yearRange: IntRange = IntRange(1900, 2100),
