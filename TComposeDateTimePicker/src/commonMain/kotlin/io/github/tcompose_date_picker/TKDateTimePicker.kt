@@ -60,7 +60,10 @@ fun TKDateTimePicker(
     textFieldType: TextFieldType = TextFieldType.Outlined,
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
-) {
+    onDismissDate: () -> Unit = {},
+    onDismissTime: () -> Unit = {},
+
+    ) {
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     var tempDate by remember { mutableStateOf<LocalDate?>(null) }
@@ -148,7 +151,11 @@ fun TKDateTimePicker(
     if (showDatePicker) {
         DatePickerDialog(
             modifier = dialogConfig.modifier,
-            onDismissRequest = { showDatePicker = false; isDialogOpen(false) },
+            onDismissRequest = {
+                showDatePicker = false
+                isDialogOpen(false)
+                onDismissDate()
+            },
             confirmButton = {
                 TextButton(onClick = {
                     materialDatePickerState.selectedDateMillis?.let { millis ->
@@ -162,7 +169,11 @@ fun TKDateTimePicker(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false; isDialogOpen(false) }) {
+                TextButton(onClick = {
+                    showDatePicker = false
+                    isDialogOpen(false)
+                    onDismissDate()
+                }) {
                     Text(dialogConfig.buttonCancel, style = dialogConfig.textCancelStyle)
                 }
             },
@@ -200,14 +211,20 @@ fun TKDateTimePicker(
                         )
                         showTimePicker = false
                         isDialogOpen(false)
+                        onDismissTime()
                     }
                 }) {
                     Text(dialogConfig.buttonOk, style = dialogConfig.textOKStyle)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showTimePicker = false; isDialogOpen(false) }) {
+                TextButton(onClick = {
+                    showTimePicker = false
+                    isDialogOpen(false)
+                    onDismissTime()
+                }) {
                     Text(dialogConfig.buttonCancel, style = dialogConfig.textCancelStyle)
+
                 }
             },
             text = {

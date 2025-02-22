@@ -51,7 +51,9 @@ fun TKDatePicker(
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
     textFieldType: TextFieldType = TextFieldType.Outlined, // اختيار النوع
-) {
+    onDismiss: () -> Unit = {},
+
+    ) {
     var showDatePicker by remember { mutableStateOf(false) }
 
 
@@ -133,6 +135,7 @@ fun TKDatePicker(
             onDismissRequest = {
                 showDatePicker = false
                 isDialogOpen(false)
+                onDismiss()
             },
 
             confirmButton = {
@@ -155,6 +158,7 @@ fun TKDatePicker(
                 TextButton(onClick = {
                     showDatePicker = false
                     isDialogOpen(false)
+                    onDismiss()
                 }) {
                     Text(dialogConfig.buttonCancel, style = dialogConfig.textCancelStyle)
                 }

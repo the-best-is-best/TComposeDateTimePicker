@@ -46,8 +46,10 @@ fun TKTimePicker(
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
     textField: (@Composable (Modifier) -> Unit)? = null,
-    textFieldType: TextFieldType = TextFieldType.Outlined
-) {
+    textFieldType: TextFieldType = TextFieldType.Outlined,
+    onDismiss: () -> Unit = {},
+
+    ) {
     var showTimePicker by remember { mutableStateOf(false) }
     val timeState = rememberTimePickerState(
         initialHour = config.initTime?.hour ?: 0,
@@ -147,12 +149,16 @@ fun TKTimePicker(
                     tempTime = Pair(timeState.hour, timeState.minute)
                     onTimeSelected(LocalTime(timeState.hour, timeState.minute))
                     showTimePicker = false
+                    onDismiss()
                 }) {
                     Text(dialogConfig.buttonOk, style = dialogConfig.textOKStyle)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showTimePicker = false }) {
+                TextButton(onClick = {
+                    showTimePicker = false
+                    onDismiss()
+                }) {
                     Text(dialogConfig.buttonCancel, style = dialogConfig.textCancelStyle)
                 }
             },
