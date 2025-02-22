@@ -25,7 +25,7 @@ picker.
 Compose Date Time Picker is available on `mavenCentral()`.
 
 ```kotlin
-implementation("io.github.the-best-is-best:compose_date_time_picker:3.1.0")
+implementation("io.github.the-best-is-best:compose_date_time_picker:3.1.1")
 ```
 
 ## How to use

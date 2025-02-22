@@ -43,7 +43,7 @@ tasks.withType<PublishToMavenRepository> {
 extra["packageNameSpace"] = "io.github.tcompose_date_time_picker"
 extra["groupId"] = "io.github.the-best-is-best"
 extra["artifactId"] = "compose_date_time_picker"
-extra["version"] = "3.1.0"
+extra["version"] = "3.1.1"
 extra["packageName"] = "TKCompose Date Picker "
 extra["packageUrl"] = "https://github.com/the-best-is-best/TComposeDateTimePicker"
 extra["packageDescription"] =
