@@ -52,6 +52,8 @@ fun TKDatePicker(
     isDialogOpen: (Boolean) -> Unit,
     textFieldType: TextFieldType = TextFieldType.Outlined, // اختيار النوع
     onDismiss: () -> Unit = {},
+    enable: Boolean = true,
+
 
     ) {
     var showDatePicker by remember { mutableStateOf(false) }
@@ -70,27 +72,32 @@ fun TKDatePicker(
     isDialogOpen(showDatePicker)
 
     val resolvedColors = when (textFieldType) {
+
         TextFieldType.Outlined -> inputFieldColors ?: OutlinedTextFieldDefaults.colors()
         TextFieldType.Filled -> inputFieldColors ?: TextFieldDefaults.colors()
+
+        else -> null
+    }
+    val inputModifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedDate) {
+        awaitEachGesture {
+            awaitFirstDown(pass = PointerEventPass.Initial)
+            val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+            if (upEvent != null) {
+                showDatePicker = true
+            }
+        }
     }
     // ✅ **استخدام `textField` الممرر أو `OutlinedTextField` كافتراضي**
     when (textFieldType) {
+        is TextFieldType.Custom -> textFieldType.textField(inputModifier)
         TextFieldType.Outlined -> OutlinedTextField(
-            modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedDate) {
-                awaitEachGesture {
-                    awaitFirstDown(pass = PointerEventPass.Initial)
-                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                    if (upEvent != null) {
-                        showDatePicker = true
-                    }
-                }
-            },
+            modifier = inputModifier,
             shape = shape,
             readOnly = true,
             value = formattedDate,
             label = config.label,
             textStyle = config.style,
-            enabled = config.enable,
+            enabled = enable,
             supportingText = config.supportingText,
             leadingIcon = config.leadingIcon,
             trailingIcon = config.trailingIcon,
@@ -98,7 +105,7 @@ fun TKDatePicker(
             suffix = config.suffix,
             placeholder = config.placeholder,
             onValueChange = {},
-            colors = resolvedColors,
+            colors = resolvedColors!!,
         )
 
         TextFieldType.Filled -> TextField(
@@ -116,7 +123,7 @@ fun TKDatePicker(
             value = formattedDate,
             label = config.label,
             textStyle = config.style,
-            enabled = config.enable,
+            enabled = enable,
             supportingText = config.supportingText,
             leadingIcon = config.leadingIcon,
             trailingIcon = config.trailingIcon,
@@ -124,7 +131,7 @@ fun TKDatePicker(
             suffix = config.suffix,
             placeholder = config.placeholder,
             onValueChange = {},
-            colors = resolvedColors,
+            colors = resolvedColors!!,
         )
     }
 

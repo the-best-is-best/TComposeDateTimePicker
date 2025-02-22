@@ -18,7 +18,6 @@ class ConfigDateTimePicker(
     val trailingIcon: @Composable() (() -> Unit)? = null,
     val prefix: @Composable() (() -> Unit)? = null,
     val suffix: @Composable() (() -> Unit)? = null,
-    val enable: Boolean = true,
 
 
     )

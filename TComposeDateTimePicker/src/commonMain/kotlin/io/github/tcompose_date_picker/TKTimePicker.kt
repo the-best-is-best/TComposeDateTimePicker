@@ -31,7 +31,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.config.ConfigTimePicker
 import io.github.tcompose_date_picker.config.TextFieldType
-import io.github.tcompose_date_picker.extensions.formatLocalDateTime
+import io.github.tcompose_date_picker.extensions.formatLocalTime
 import kotlinx.datetime.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,9 +45,10 @@ fun TKTimePicker(
     inputFieldColors: TextFieldColors? = null,
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
-    textField: (@Composable (Modifier) -> Unit)? = null,
     textFieldType: TextFieldType = TextFieldType.Outlined,
     onDismiss: () -> Unit = {},
+    enable: Boolean = true
+
 
     ) {
     var showTimePicker by remember { mutableStateOf(false) }
@@ -64,18 +65,20 @@ fun TKTimePicker(
             if (tempTime == null) "" else LocalTime(
                 tempTime!!.first,
                 tempTime!!.second
-            ).formatLocalDateTime(use24HourFormat = config.is24Hour)
+            ).formatLocalTime(use24HourFormat = config.is24Hour)
         }
     }
 
     isDialogOpen(showTimePicker)
 
     val resolvedColors = when (textFieldType) {
+
         TextFieldType.Outlined -> inputFieldColors ?: OutlinedTextFieldDefaults.colors()
         TextFieldType.Filled -> inputFieldColors ?: TextFieldDefaults.colors()
-    }
+        else -> null
 
-    textField?.invoke(modifier.width(IntrinsicSize.Max).pointerInput(formattedTime) {
+    }
+    val inputModifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedTime) {
         awaitEachGesture {
             awaitFirstDown(pass = PointerEventPass.Initial)
             val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
@@ -83,30 +86,26 @@ fun TKTimePicker(
                 showTimePicker = true
             }
         }
-    }) ?: when (textFieldType) {
+    }
+
+    when (textFieldType) {
+        is TextFieldType.Custom -> textFieldType.textField(inputModifier)
+
         TextFieldType.Outlined -> OutlinedTextField(
-            modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedTime) {
-                awaitEachGesture {
-                    awaitFirstDown(pass = PointerEventPass.Initial)
-                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                    if (upEvent != null) {
-                        showTimePicker = true
-                    }
-                }
-            },
+            modifier = inputModifier,
             shape = shape,
             readOnly = true,
             value = formattedTime,
             label = config.label,
             placeholder = config.placeholder,
             textStyle = config.style,
-            enabled = config.enable,
+            enabled = enable,
             supportingText = config.supportingText,
             leadingIcon = config.leadingIcon,
             trailingIcon = config.trailingIcon,
             prefix = config.prefix,
             suffix = config.suffix,
-            colors = resolvedColors,
+            colors = resolvedColors!!,
             onValueChange = {},
         )
 
@@ -126,13 +125,13 @@ fun TKTimePicker(
             label = config.label,
             placeholder = config.placeholder,
             textStyle = config.style,
-            enabled = config.enable,
+            enabled = enable,
             supportingText = config.supportingText,
             leadingIcon = config.leadingIcon,
             trailingIcon = config.trailingIcon,
             prefix = config.prefix,
             suffix = config.suffix,
-            colors = resolvedColors,
+            colors = resolvedColors!!,
             onValueChange = {},
         )
     }
@@ -149,7 +148,6 @@ fun TKTimePicker(
                     tempTime = Pair(timeState.hour, timeState.minute)
                     onTimeSelected(LocalTime(timeState.hour, timeState.minute))
                     showTimePicker = false
-                    onDismiss()
                 }) {
                     Text(dialogConfig.buttonOk, style = dialogConfig.textOKStyle)
                 }

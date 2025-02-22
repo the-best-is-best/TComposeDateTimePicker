@@ -62,6 +62,7 @@ fun TKDateTimePicker(
     isDialogOpen: (Boolean) -> Unit,
     onDismissDate: () -> Unit = {},
     onDismissTime: () -> Unit = {},
+    enable: Boolean = true
 
     ) {
     var showDatePicker by remember { mutableStateOf(false) }
@@ -108,17 +109,19 @@ fun TKDateTimePicker(
     val resolvedColors = when (textFieldType) {
         TextFieldType.Outlined -> inputFieldColors ?: OutlinedTextFieldDefaults.colors()
         TextFieldType.Filled -> inputFieldColors ?: TextFieldDefaults.colors()
+        else -> null
     }
 
     when (textFieldType) {
+        is TextFieldType.Custom -> textFieldType.textField(inputModifier)
         TextFieldType.Outlined -> OutlinedTextField(
             modifier = inputModifier,
             shape = shape,
             readOnly = true,
             value = formattedDateTime,
-            colors = resolvedColors,
+            colors = resolvedColors!!,
             textStyle = config.style,
-            enabled = config.enable,
+            enabled = enable,
             supportingText = config.supportingText,
             leadingIcon = config.leadingIcon,
             trailingIcon = config.trailingIcon,
@@ -134,9 +137,9 @@ fun TKDateTimePicker(
             shape = shape,
             readOnly = true,
             value = formattedDateTime,
-            colors = resolvedColors,
+            colors = resolvedColors!!,
             textStyle = config.style,
-            enabled = config.enable,
+            enabled = enable,
             supportingText = config.supportingText,
             leadingIcon = config.leadingIcon,
             trailingIcon = config.trailingIcon,
@@ -211,7 +214,6 @@ fun TKDateTimePicker(
                         )
                         showTimePicker = false
                         isDialogOpen(false)
-                        onDismissTime()
                     }
                 }) {
                     Text(dialogConfig.buttonOk, style = dialogConfig.textOKStyle)

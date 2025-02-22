@@ -1,5 +1,10 @@
 package io.github.tcompose_date_picker.config
 
-enum class TextFieldType {
-    Outlined, Filled
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+
+sealed class TextFieldType {
+    object Outlined : TextFieldType()
+    object Filled : TextFieldType()
+    data class Custom(val textField: @Composable (Modifier) -> Unit) : TextFieldType()
 }
