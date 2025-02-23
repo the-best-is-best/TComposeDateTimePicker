@@ -7,6 +7,7 @@ androidx-activityCompose = "1.10.0"
 androidx-uiTest = "1.7.8"
 kotlinxDatetime = "0.6.2"
 maven-publish = "0.30.0"
+kotlinx-serialization = "1.7.3"
 
 
 
@@ -18,6 +19,7 @@ androidx-uitest-testManifest = { module = "androidx.compose.ui:ui-test-manifest"
 androidx-uitest-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-uiTest" }
 cupertino-adaptive = { module = "io.github.alexzhirkevich:cupertino-adaptive", version.ref = "cupertinoAdaptive" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 [plugins]
 
