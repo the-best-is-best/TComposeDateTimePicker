@@ -1,6 +1,5 @@
 package io.github.sample
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -86,7 +86,7 @@ internal fun App() = AppTheme {
             useAdaptive = true,
             textFieldType = TextFieldType.Custom { modifier ->
                 Row(
-                    modifier = modifier,
+                    modifier = modifier.widthIn(min = 200.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(
                         10.dp,
@@ -102,7 +102,7 @@ internal fun App() = AppTheme {
                             .fillMaxWidth() // داخل weight في Row
                             .border(1.dp, Color(0xff666666), RoundedCornerShape(10.dp))
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Color.Cyan)
+                            //     .background(Color.DarkGray)
                             .padding(horizontal = 10.dp, vertical = 3.dp),
                         contentAlignment = Alignment.Center
                     ) {
