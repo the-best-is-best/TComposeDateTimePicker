@@ -5,20 +5,14 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberDatePickerState
@@ -33,9 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import com.mohamedrejeb.calf.ui.datepicker.rememberAdaptiveDatePickerState
+import com.mohamedrejeb.calf.ui.timepicker.rememberAdaptiveTimePickerState
 import io.github.tcompose_date_picker.config.ConfigDateTimePicker
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.config.TextFieldType
+import io.github.tcompose_date_picker.dialogs.date_picker.AdaptiveDatePickerDialog
+import io.github.tcompose_date_picker.dialogs.time_picker.AdaptiveTimePickerDialog
+import io.github.tcompose_date_picker.dialogs.time_picker.TimePickerDialog
 import io.github.tcompose_date_picker.extensions.formatLocalDateTime
 import io.github.tcompose_date_picker.extensions.now
 import io.github.tcompose_date_picker.extensions.toEpochMillis
@@ -50,6 +49,7 @@ import kotlinx.datetime.toLocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TKDateTimePicker(
+    useAdaptive: Boolean = false,
     modifier: Modifier = Modifier,
     onDateTimeSelected: (LocalDateTime?) -> Unit,
     config: ConfigDateTimePicker = ConfigDateTimePicker(),
@@ -74,8 +74,18 @@ fun TKDateTimePicker(
         yearRange = config.dateConfig.yearRange,
         initialSelectedDateMillis = config.dateConfig.initDate?.toEpochMillis()
     )
+    val adaptiveDatePickerState = rememberAdaptiveDatePickerState(
+        yearRange = config.dateConfig.yearRange,
+        initialSelectedDateMillis = config.dateConfig.initDate?.toEpochMillis()
+    )
 
-    val timePickerState = rememberTimePickerState(
+    val materialTimeState = rememberTimePickerState(
+        initialHour = config.timeConfig.initTime?.hour ?: LocalTime.now().hour,
+        initialMinute = config.timeConfig.initTime?.minute ?: LocalTime.now().minute,
+        is24Hour = config.timeConfig.is24Hour
+    )
+
+    val adaptiveTimePicker = rememberAdaptiveTimePickerState(
         initialHour = config.timeConfig.initTime?.hour ?: LocalTime.now().hour,
         initialMinute = config.timeConfig.initTime?.minute ?: LocalTime.now().minute,
         is24Hour = config.timeConfig.is24Hour
@@ -152,57 +162,64 @@ fun TKDateTimePicker(
     }
 
     if (showDatePicker) {
-        DatePickerDialog(
-            modifier = dialogConfig.modifier,
-            onDismissRequest = {
-                showDatePicker = false
-                isDialogOpen(false)
-                onDismissDate()
-            },
-            confirmButton = {
-                TextButton(onClick = {
+        if (!useAdaptive) {
+            io.github.tcompose_date_picker.dialogs.date_picker.DatePickerDialog(
+                onDismiss = {
+                    showDatePicker = false
+                    isDialogOpen(false)
+                    onDismissDate()
+                },
+                dialogConfig = dialogConfig,
+                datePickerState = materialDatePickerState,
+                onDateSelected = {
                     materialDatePickerState.selectedDateMillis?.let { millis ->
+                        tempDate = Instant.fromEpochMilliseconds(millis)
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                        showDatePicker = false
+                        showDatePicker = false
+                        showTimePicker = true
+
+                    }
+                },
+                config = config.dateConfig,
+                colors = colorsDate,
+            )
+        } else {
+            AdaptiveDatePickerDialog(
+                onDismiss = {
+                    showDatePicker = false
+                    isDialogOpen(false)
+                    onDismissDate()
+                },
+                dialogConfig = dialogConfig,
+                datePickerState = adaptiveDatePickerState,
+                onDateSelected = {
+                    adaptiveDatePickerState.selectedDateMillis?.let { millis ->
                         tempDate = Instant.fromEpochMilliseconds(millis)
                             .toLocalDateTime(TimeZone.currentSystemDefault()).date
                         showDatePicker = false
                         showTimePicker = true
                     }
-                }) {
-                    Text(dialogConfig.buttonNext, style = dialogConfig.textOKStyle)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
-                    showDatePicker = false
-                    isDialogOpen(false)
-                    onDismissDate()
-                }) {
-                    Text(dialogConfig.buttonCancel, style = dialogConfig.textCancelStyle)
-                }
-            },
-            content = {
-                DatePicker(
-                    title = dialogConfig.title,
-                    headline = dialogConfig.headline,
-                    modifier = dialogConfig.dateDialogModifier,
-                    dateFormatter = config.dateConfig.dateFormatter
-                        ?: remember { DatePickerDefaults.dateFormatter() },
-                    state = materialDatePickerState,
-                    colors = colorsDate,
-                    showModeToggle = true
-                )
-            }
-        )
+                },
+                config = config.dateConfig,
+                colors = colorsDate,
+            )
+        }
     }
 
     if (showTimePicker) {
-        AlertDialog(
-            modifier = dialogConfig.modifier,
-            onDismissRequest = { showTimePicker = false; isDialogOpen(false) },
-            confirmButton = {
-                TextButton(onClick = {
+        if (!useAdaptive) {
+            TimePickerDialog(
+                dialogConfig = dialogConfig,
+                timePickerState = materialTimeState,
+                onDismiss = {
+                    showTimePicker = false
+                    isDialogOpen(false)
+                    onDismissTime()
+                },
+                onDateSelected = {
                     tempDate?.let { date ->
-                        tempTime = timePickerState.hour to timePickerState.minute
+                        tempTime = materialTimeState.hour to materialTimeState.minute
                         onDateTimeSelected(
                             LocalDateTime(
                                 date.year,
@@ -215,27 +232,39 @@ fun TKDateTimePicker(
                         showTimePicker = false
                         isDialogOpen(false)
                     }
-                }) {
-                    Text(dialogConfig.buttonOk, style = dialogConfig.textOKStyle)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
+                },
+                config = config.timeConfig,
+                colors = colorsTime
+            )
+        } else {
+            AdaptiveTimePickerDialog(
+                dialogConfig = dialogConfig,
+                timePickerState = adaptiveTimePicker,
+                onDismiss = {
                     showTimePicker = false
                     isDialogOpen(false)
                     onDismissTime()
-                }) {
-                    Text(dialogConfig.buttonCancel, style = dialogConfig.textCancelStyle)
+                },
+                onDateSelected = {
+                    tempDate?.let { date ->
+                        tempTime = adaptiveTimePicker.hour to adaptiveTimePicker.minute
+                        onDateTimeSelected(
+                            LocalDateTime(
+                                date.year,
+                                date.month,
+                                date.dayOfMonth,
+                                tempTime!!.first,
+                                tempTime!!.second
+                            )
+                        )
+                        showTimePicker = false
+                        isDialogOpen(false)
+                    }
 
-                }
-            },
-            text = {
-                TimePicker(
-                    modifier = dialogConfig.timeDialogModifier,
-                    state = timePickerState,
-                    colors = colorsTime
-                )
-            }
-        )
+                },
+                config = config.timeConfig,
+                colors = colorsTime
+            )
+        }
     }
 }

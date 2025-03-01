@@ -5,16 +5,12 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberTimePickerState
@@ -28,15 +24,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import com.mohamedrejeb.calf.ui.timepicker.rememberAdaptiveTimePickerState
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.config.ConfigTimePicker
 import io.github.tcompose_date_picker.config.TextFieldType
+import io.github.tcompose_date_picker.dialogs.time_picker.AdaptiveTimePickerDialog
+import io.github.tcompose_date_picker.dialogs.time_picker.TimePickerDialog
 import io.github.tcompose_date_picker.extensions.formatLocalTime
 import kotlinx.datetime.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TKTimePicker(
+    useAdaptive: Boolean = false,
     modifier: Modifier = Modifier,
     config: ConfigTimePicker = ConfigTimePicker(),
     dialogConfig: ConfigDialog = ConfigDialog(),
@@ -52,7 +52,12 @@ fun TKTimePicker(
 
     ) {
     var showTimePicker by remember { mutableStateOf(false) }
-    val timeState = rememberTimePickerState(
+    val materialTimeState = rememberTimePickerState(
+        initialHour = config.initTime?.hour ?: 0,
+        initialMinute = config.initTime?.minute ?: 0,
+        is24Hour = config.is24Hour
+    )
+    val adaptiveTimeState = rememberAdaptiveTimePickerState(
         initialHour = config.initTime?.hour ?: 0,
         initialMinute = config.initTime?.minute ?: 0,
         is24Hour = config.is24Hour
@@ -137,37 +142,40 @@ fun TKTimePicker(
     }
 
     if (showTimePicker) {
-        AlertDialog(
-            modifier = dialogConfig.modifier,
-            onDismissRequest = {
-                showTimePicker = false
-                isDialogOpen(false)
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    tempTime = Pair(timeState.hour, timeState.minute)
-                    onTimeSelected(LocalTime(timeState.hour, timeState.minute))
+        if (!useAdaptive) {
+            TimePickerDialog(
+                dialogConfig = dialogConfig,
+                timePickerState = materialTimeState,
+                onDismiss = {
                     showTimePicker = false
-                }) {
-                    Text(dialogConfig.buttonOk, style = dialogConfig.textOKStyle)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
-                    showTimePicker = false
+                    isDialogOpen(false)
                     onDismiss()
-                }) {
-                    Text(dialogConfig.buttonCancel, style = dialogConfig.textCancelStyle)
-                }
-            },
-            title = { Text(config.title) },
-            text = {
-                TimePicker(
-                    modifier = dialogConfig.timeDialogModifier,
-                    state = timeState,
-                    colors = colors
-                )
-            }
-        )
+                },
+                onDateSelected = {
+                    tempTime = Pair(materialTimeState.hour, materialTimeState.minute)
+                    onTimeSelected(LocalTime(materialTimeState.hour, materialTimeState.minute))
+                    showTimePicker = false
+                },
+                config = config,
+                colors = colors
+            )
+        } else {
+            AdaptiveTimePickerDialog(
+                dialogConfig = dialogConfig,
+                timePickerState = adaptiveTimeState,
+                onDismiss = {
+                    showTimePicker = false
+                    isDialogOpen(false)
+                },
+                onDateSelected = {
+                    tempTime = Pair(materialTimeState.hour, materialTimeState.minute)
+                    onTimeSelected(LocalTime(materialTimeState.hour, materialTimeState.minute))
+                    showTimePicker = false
+                },
+                config = config,
+                colors = colors
+            )
+        }
+
     }
 }

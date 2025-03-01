@@ -50,7 +50,7 @@ internal fun App() = AppTheme {
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         TKDateTimePicker(
-
+            useAdaptive = true,
             textFieldType = TextFieldType.Filled,
             config = ConfigDateTimePicker(
                 label = {
@@ -83,6 +83,7 @@ internal fun App() = AppTheme {
         )
 
         TKTimePicker(
+            useAdaptive = true,
             textFieldType = TextFieldType.Custom { modifier ->
                 Row(
                     modifier = modifier,
