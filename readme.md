@@ -51,6 +51,10 @@ manipulation, formatting, and conversion.
 
 ---
 
+## Download
+
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.the-best-is-best/compose_date_time_picker)](https://central.sonatype.com/artifact/io.github.the-best-is-best/compose_date_time_picker)
+
 ## 📦 Installation
 
 Add the dependency to your `build.gradle.kts` file:
