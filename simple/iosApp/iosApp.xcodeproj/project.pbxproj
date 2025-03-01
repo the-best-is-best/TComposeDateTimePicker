@@ -20,9 +20,6 @@
 		412A55CB2D6A10890094D4B5 /* TKLocalDate.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TKLocalDate.kt; sourceTree = "<group>"; };
 		412A55CC2D6A10890094D4B5 /* TKLocalDateTime.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TKLocalDateTime.kt; sourceTree = "<group>"; };
 		412A55CD2D6A10890094D4B5 /* TKLocalTime.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TKLocalTime.kt; sourceTree = "<group>"; };
-		412A55CF2D6A10890094D4B5 /* DatePickerState.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = DatePickerState.kt; sourceTree = "<group>"; };
-		412A55D02D6A10890094D4B5 /* DateTimePickerState.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = DateTimePickerState.kt; sourceTree = "<group>"; };
-		412A55D12D6A10890094D4B5 /* TimePickerState.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TimePickerState.kt; sourceTree = "<group>"; };
 		412A55D32D6A10890094D4B5 /* TKDatePicker.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TKDatePicker.kt; sourceTree = "<group>"; };
 		412A55D42D6A10890094D4B5 /* TKDateTimePicker.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TKDateTimePicker.kt; sourceTree = "<group>"; };
 		412A55D52D6A10890094D4B5 /* TKTimePicker.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = TKTimePicker.kt; sourceTree = "<group>"; };
@@ -73,22 +70,11 @@
 			path = extensions;
 			sourceTree = "<group>";
 		};
-		412A55D22D6A10890094D4B5 /* states */ = {
-			isa = PBXGroup;
-			children = (
-				412A55CF2D6A10890094D4B5 /* DatePickerState.kt */,
-				412A55D02D6A10890094D4B5 /* DateTimePickerState.kt */,
-				412A55D12D6A10890094D4B5 /* TimePickerState.kt */,
-			);
-			path = states;
-			sourceTree = "<group>";
-		};
 		412A55D62D6A10890094D4B5 /* tcompose_date_picker */ = {
 			isa = PBXGroup;
 			children = (
 				412A55CA2D6A10890094D4B5 /* config */,
 				412A55CE2D6A10890094D4B5 /* extensions */,
-				412A55D22D6A10890094D4B5 /* states */,
 				412A55D32D6A10890094D4B5 /* TKDatePicker.kt */,
 				412A55D42D6A10890094D4B5 /* TKDateTimePicker.kt */,
 				412A55D52D6A10890094D4B5 /* TKTimePicker.kt */,
@@ -360,6 +346,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
@@ -386,6 +373,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;

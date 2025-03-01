@@ -5,15 +5,11 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -28,9 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import com.mohamedrejeb.calf.ui.datepicker.rememberAdaptiveDatePickerState
 import io.github.tcompose_date_picker.config.ConfigDatePicker
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.config.TextFieldType
+import io.github.tcompose_date_picker.dialogs.date_picker.AdaptiveDatePickerDialog
 import io.github.tcompose_date_picker.extensions.formatLocalDate
 import io.github.tcompose_date_picker.extensions.toEpochMillis
 import kotlinx.datetime.Instant
@@ -43,10 +41,11 @@ import kotlinx.datetime.toLocalDateTime
 @Composable
 fun TKDatePicker(
     modifier: Modifier = Modifier,
+    useAdaptive: Boolean = false,
     config: ConfigDatePicker = ConfigDatePicker(),
     dialogConfig: ConfigDialog = ConfigDialog(),
-    onDateSelected: (LocalDate?) -> Unit,
     colors: DatePickerColors = DatePickerDefaults.colors(),
+    onDateSelected: (LocalDate?) -> Unit,
     inputFieldColors: TextFieldColors? = null,
     shape: Shape = OutlinedTextFieldDefaults.shape,
     isDialogOpen: (Boolean) -> Unit,
@@ -63,8 +62,12 @@ fun TKDatePicker(
         initialSelectedDateMillis = config.initDate?.toEpochMillis(),
         yearRange = config.yearRange
     )
+    val adaptiveDatePickerState = rememberAdaptiveDatePickerState(
+        initialSelectedDateMillis = config.initDate?.toEpochMillis(),
+        yearRange = config.yearRange
+    )
 
-   var tempDate by remember { mutableStateOf(config.initDate) }
+    var tempDate by remember { mutableStateOf(config.initDate) }
     val formattedDate by remember { derivedStateOf { tempDate?.formatLocalDate() ?: "" } }
 
 
@@ -137,54 +140,50 @@ fun TKDatePicker(
 
 
     if (showDatePicker) {
-        DatePickerDialog(
-            modifier = dialogConfig.modifier,
-            onDismissRequest = {
-                showDatePicker = false
-                isDialogOpen(false)
-                onDismiss()
-            },
-
-            confirmButton = {
-                TextButton(onClick = {
-
-                    materialDatePickerState.selectedDateMillis?.let { millis ->
-                            tempDate = Instant.fromEpochMilliseconds(millis)
-                                .toLocalDateTime(TimeZone.currentSystemDefault()).date
-                            showDatePicker = false
-                            val selectedDate = Instant.fromEpochMilliseconds(millis)
-                                .toLocalDateTime(TimeZone.currentSystemDefault()).date
-                            onDateSelected(selectedDate)
-                        }
-
-                }) {
-                    Text(dialogConfig.buttonOk, style = dialogConfig.textOKStyle)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
+        if (!useAdaptive) {
+            io.github.tcompose_date_picker.dialogs.date_picker.DatePickerDialog(
+                onDismiss = {
                     showDatePicker = false
                     isDialogOpen(false)
                     onDismiss()
-                }) {
-                    Text(dialogConfig.buttonCancel, style = dialogConfig.textCancelStyle)
-                }
-            },
-            content = {
-
-                    DatePicker(
-                        modifier = dialogConfig.dateDialogModifier,
-                        title = dialogConfig.title,
-                        headline = dialogConfig.headline,
-                        dateFormatter = config.dateFormatter
-                            ?: remember { DatePickerDefaults.dateFormatter() },
-                        state = materialDatePickerState,
-                        colors = colors,
-                        showModeToggle = true
-                    )
-
-            }
-
-        )
+                },
+                dialogConfig = dialogConfig,
+                datePickerState = materialDatePickerState,
+                onDateSelected = {
+                    materialDatePickerState.selectedDateMillis?.let { millis ->
+                        tempDate = Instant.fromEpochMilliseconds(millis)
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                        showDatePicker = false
+                        val selectedDate = Instant.fromEpochMilliseconds(millis)
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                        onDateSelected(selectedDate)
+                    }
+                },
+                config = config,
+                colors = colors,
+            )
+        } else {
+            AdaptiveDatePickerDialog(
+                onDismiss = {
+                    showDatePicker = false
+                    isDialogOpen(false)
+                    onDismiss()
+                },
+                dialogConfig = dialogConfig,
+                datePickerState = adaptiveDatePickerState,
+                onDateSelected = {
+                    adaptiveDatePickerState.selectedDateMillis?.let { millis ->
+                        tempDate = Instant.fromEpochMilliseconds(millis)
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                        showDatePicker = false
+                        val selectedDate = Instant.fromEpochMilliseconds(millis)
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                        onDateSelected(selectedDate)
+                    }
+                },
+                config = config,
+                colors = colors,
+            )
+        }
     }
 }

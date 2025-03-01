@@ -147,6 +147,9 @@ kotlin {
 
             implementation(libs.kotlinx.serialization.json)
 
+            api(libs.calf.ui)
+
+
 
 
         }

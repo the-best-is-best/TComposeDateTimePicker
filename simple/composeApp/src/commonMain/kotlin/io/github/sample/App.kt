@@ -67,6 +67,7 @@ internal fun App() = AppTheme {
         )
 
         TKDatePicker(
+            useAdaptive = true,
             config = ConfigDatePicker(
                 label = {
                     Text("Select Date")
