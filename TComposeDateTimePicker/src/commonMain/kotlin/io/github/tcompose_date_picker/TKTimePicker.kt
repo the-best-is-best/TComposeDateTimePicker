@@ -168,8 +168,8 @@ fun TKTimePicker(
                     isDialogOpen(false)
                 },
                 onDateSelected = {
-                    tempTime = Pair(materialTimeState.hour, materialTimeState.minute)
-                    onTimeSelected(LocalTime(materialTimeState.hour, materialTimeState.minute))
+                    tempTime = Pair(adaptiveTimeState.hour, adaptiveTimeState.minute)
+                    onTimeSelected(LocalTime(adaptiveTimeState.hour, adaptiveTimeState.minute))
                     showTimePicker = false
                 },
                 config = config,
