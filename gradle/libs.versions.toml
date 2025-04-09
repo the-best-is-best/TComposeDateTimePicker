@@ -1,14 +1,13 @@
 [versions]
-calfUi = "0.7.0"
-cupertinoAdaptive = "0.1.0-alpha04"
-kotlin = "2.1.10"
+calfUi = "0.7.1"
+kotlin = "2.1.20"
 compose = "1.7.3"
 agp = "8.7.1"
-androidx-activityCompose = "1.10.0"
+androidx-activityCompose = "1.10.1"
 androidx-uiTest = "1.7.8"
 kotlinxDatetime = "0.6.2"
-maven-publish = "0.30.0"
-kotlinx-serialization = "1.7.3"
+maven-publish = "0.31.0"
+kotlinx-serialization = "1.8.1"
 
 
 
@@ -19,7 +18,6 @@ androidx-activityCompose = { module = "androidx.activity:activity-compose", vers
 androidx-uitest-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-uiTest" }
 androidx-uitest-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "androidx-uiTest" }
 calf-ui = { module = "com.mohamedrejeb.calf:calf-ui", version.ref = "calfUi" }
-cupertino-adaptive = { module = "io.github.alexzhirkevich:cupertino-adaptive", version.ref = "cupertinoAdaptive" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 

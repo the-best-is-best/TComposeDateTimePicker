@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -41,11 +42,14 @@ import kotlinx.datetime.LocalTime
 @Composable
 internal fun App() = AppTheme {
     var time by remember { mutableStateOf<LocalTime?>(null) }
+    var isDialogOpen by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .blur(if(isDialogOpen) 2.dp else 0.dp)
             .windowInsetsPadding(WindowInsets.safeDrawing)
-            .padding(16.dp),
+            .padding(16.dp)
+        ,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -59,8 +63,9 @@ internal fun App() = AppTheme {
 
             ),
             isDialogOpen = {
-
+              isDialogOpen = it
             },
+
             onDateTimeSelected = {
                 println("date time selected is ${it?.toIsoStringWithOffset()}")
             }

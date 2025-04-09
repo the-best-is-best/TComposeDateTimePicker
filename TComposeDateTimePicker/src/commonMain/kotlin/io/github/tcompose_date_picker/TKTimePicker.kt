@@ -15,6 +15,7 @@ import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,7 +75,10 @@ fun TKTimePicker(
         }
     }
 
-    isDialogOpen(showTimePicker)
+    LaunchedEffect(showTimePicker) {
+        isDialogOpen(showTimePicker)
+    }
+
 
     val resolvedColors = when (textFieldType) {
 

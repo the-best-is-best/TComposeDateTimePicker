@@ -65,7 +65,7 @@ repositories {
 }
 
 dependencies {
-  implementation("io.github.the-best-is-best:compose_date_time_picker:3.2.1")
+  implementation("io.github.the-best-is-best:compose_date_time_picker:3.2.2")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:<version>") // Required for date/time manipulation
 }
 ```
