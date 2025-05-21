@@ -6,13 +6,12 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
     alias(libs.plugins.multiplatform)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose)
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.android.application)
     id("maven-publish")
     id("signing")
     alias(libs.plugins.maven.publish)
@@ -105,12 +104,14 @@ signing {
 
 val packageNameSpace = extra["packageNameSpace"].toString()
 
+
+
 kotlin {
     jvmToolchain(17)
-    androidTarget {
-        //https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-test.html
-        instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
-    }
+    androidTarget()
+
+
+
 
     jvm()
 
@@ -179,33 +180,15 @@ kotlin {
     }
 }
 
-
 android {
-    namespace = extra["packageNameSpace"].toString()
+    namespace = packageNameSpace
     compileSdk = 35
-
     defaultConfig {
         minSdk = 21
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
-        }
-        buildFeatures {
-            //enables a Compose tooling support in the AndroidStudio
-            compose = true
-        }
     }
 }
 
-//https://developer.android.com/develop/ui/compose/testing#setup
-dependencies {
-    androidTestImplementation(libs.androidx.uitest.junit4)
-    debugImplementation(libs.androidx.uitest.testManifest)
-    //temporary fix: https://youtrack.jetbrains.com/issue/CMP-5864
-    androidTestImplementation("androidx.test:monitor") {
-        version { strictly("1.6.1") }
-    }
-}
+
 compose.desktop {
     application {
         mainClass = "MainKt"

@@ -25,6 +25,7 @@ fun DatePickerDialog(
 
 ) {
     androidx.compose.material3.DatePickerDialog(
+
         modifier = dialogConfig.modifier,
         onDismissRequest = onDismiss,
 
@@ -51,6 +52,7 @@ fun DatePickerDialog(
                     ?: remember { DatePickerDefaults.dateFormatter() },
                 state = datePickerState,
                 colors = colors,
+
                 showModeToggle = true
             )
 

@@ -10,6 +10,7 @@ import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -53,6 +54,7 @@ fun TKDatePicker(
     textFieldType: TextFieldType = TextFieldType.Outlined, // اختيار النوع
     onDismiss: () -> Unit = {},
     enable: Boolean = true,
+    selectableDates: SelectableDates,
 
 
     ) {
@@ -61,6 +63,7 @@ fun TKDatePicker(
 
     val materialDatePickerState = rememberDatePickerState(
         initialSelectedDateMillis = config.initDate?.toEpochMillis(),
+        selectableDates = selectableDates,
         yearRange = config.yearRange
     )
     val adaptiveDatePickerState = rememberAdaptiveDatePickerState(
@@ -164,7 +167,8 @@ fun TKDatePicker(
                 },
                 config = config,
                 colors = colors,
-            )
+
+                )
         } else {
             AdaptiveDatePickerDialog(
                 onDismiss = {
