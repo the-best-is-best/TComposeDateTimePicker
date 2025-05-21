@@ -11,7 +11,7 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     id("maven-publish")
     id("signing")
     alias(libs.plugins.maven.publish)
