@@ -2,7 +2,9 @@ package io.github.tcompose_date_picker.extensions
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
@@ -95,4 +97,12 @@ fun LocalDate.formatLocalDate(): String {
     val day = this.dayOfMonth.toString().padStart(2, '0')
 
     return "$day/$month/$year" // Format as "dd/MM/yyyy"
+}
+
+fun LocalDate.toInstant(timeZone: TimeZone = TimeZone.currentSystemDefault()): Instant =
+    this.atStartOfDayIn(timeZone)
+
+
+fun LocalDate.toLocalDateTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime {
+    return this.atStartOfDayIn(timeZone).toLocalDateTime(timeZone)
 }

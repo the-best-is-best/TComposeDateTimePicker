@@ -2,6 +2,7 @@ package io.github.tcompose_date_picker.extensions
 
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -142,4 +143,43 @@ fun LocalDateTime.toIsoStringWithOffset(): String {
             abs(offsetHours).toString().padStart(2, '0') + ":" +
             abs(offsetMinutes).toString().padStart(2, '0')
     return "${this.toIsoString()}$formattedOffset"
+}
+
+
+
+fun LocalDateTime.formattedDateTimeWithDayName(
+    withoutSeconds: Boolean = true,
+    use24HourFormat: Boolean = false,
+): String {
+    val dayName = this.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
+    val year = this.year.toString().padStart(4, '0')
+    val month = this.monthNumber.toString().padStart(2, '0')
+    val day = this.dayOfMonth.toString().padStart(2, '0')
+
+    val hour = if (use24HourFormat) this.hour.toString().padStart(2, '0')
+    else (if (this.hour == 0) 12 else this.hour % 12).toString()
+
+    val amPm = if (use24HourFormat) "" else if (this.hour < 12) " AM" else " PM"
+    val minute = this.minute.toString().padStart(2, '0')
+    val second = if (withoutSeconds) "" else ":${this.second.toString().padStart(2, '0')}"
+
+    return "$dayName $day/$month/$year $hour:$minute$second$amPm"
+}
+
+
+fun LocalTime.withCurrentDateAndOffset(timeZone: TimeZone = TimeZone.currentSystemDefault()): String {
+    val now = Clock.System.now()
+    val currentDate = now.toLocalDateTime(timeZone).date
+    val offset = timeZone.offsetAt(now)
+
+    val timeWithSeconds = this.toString().let {
+        if (it.count { c -> c == ':' } == 1) "$it:00" else it
+    }
+
+    return "$currentDate" + "T$timeWithSeconds$offset"
+}
+
+
+fun LocalDateTime.toInstant(timeZone: TimeZone = TimeZone.currentSystemDefault()): Instant {
+    return this.toInstant(timeZone)
 }

@@ -42,7 +42,7 @@ tasks.withType<PublishToMavenRepository> {
 extra["packageNameSpace"] = "io.github.tcompose_date_time_picker"
 extra["groupId"] = "io.github.the-best-is-best"
 extra["artifactId"] = "compose_date_time_picker"
-extra["version"] = "3.2.2"
+extra["version"] = "3.2.3"
 extra["packageName"] = "TKCompose Date Picker "
 extra["packageUrl"] = "https://github.com/the-best-is-best/TComposeDateTimePicker"
 extra["packageDescription"] =
@@ -132,7 +132,6 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = packageNameSpace
-            isStatic = true
         }
     }
 
@@ -141,13 +140,9 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
 
-            implementation(libs.kotlinx.datetime)
-
-            implementation(libs.kotlinx.serialization.json)
-
+            api(libs.kotlinx.datetime)
+            api(libs.kotlinx.serialization.json)
             api(libs.calf.ui)
 
 
@@ -182,32 +177,8 @@ kotlin {
 
 android {
     namespace = packageNameSpace
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 21
-    }
-}
-
-
-compose.desktop {
-    application {
-        mainClass = "MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = packageNameSpace
-            packageVersion = "1.0.0"
-
-            linux {
-                iconFile.set(project.file("desktopAppIcons/LinuxIcon.png"))
-            }
-            windows {
-                iconFile.set(project.file("desktopAppIcons/WindowsIcon.ico"))
-            }
-            macOS {
-                iconFile.set(project.file("desktopAppIcons/MacosIcon.icns"))
-                bundleID = "org.company.app.desktopApp"
-            }
-        }
     }
 }
