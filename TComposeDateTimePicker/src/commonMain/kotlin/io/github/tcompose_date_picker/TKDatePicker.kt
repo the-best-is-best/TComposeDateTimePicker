@@ -32,13 +32,13 @@ import io.github.tcompose_date_picker.config.TextFieldType
 import io.github.tcompose_date_picker.dialogs.date_picker.AdaptiveDatePickerDialog
 import io.github.tcompose_date_picker.extensions.formatLocalDate
 import io.github.tcompose_date_picker.extensions.toEpochMillis
-import kotlinx.datetime.Instant
+import io.github.tcompose_date_picker.extensions.toLocalDateTime
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun TKDatePicker(
     modifier: Modifier = Modifier,
@@ -93,7 +93,6 @@ fun TKDatePicker(
             }
         }
     }
-    // ✅ **استخدام `textField` الممرر أو `OutlinedTextField` كافتراضي**
     when (textFieldType) {
         is TextFieldType.Custom -> textFieldType.textField(inputModifier)
         TextFieldType.Outlined -> OutlinedTextField(
@@ -155,10 +154,9 @@ fun TKDatePicker(
                 onDateSelected = {
                     materialDatePickerState.selectedDateMillis?.let { millis ->
                         tempDate = Instant.fromEpochMilliseconds(millis)
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            .toLocalDateTime().date
                         showDatePicker = false
-                        val selectedDate = Instant.fromEpochMilliseconds(millis)
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                        val selectedDate = tempDate
                         onDateSelected(selectedDate)
                     }
                 },
@@ -178,10 +176,9 @@ fun TKDatePicker(
                 onDateSelected = {
                     adaptiveDatePickerState.selectedDateMillis?.let { millis ->
                         tempDate = Instant.fromEpochMilliseconds(millis)
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            .toLocalDateTime().date
                         showDatePicker = false
-                        val selectedDate = Instant.fromEpochMilliseconds(millis)
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                        val selectedDate = tempDate
                         onDateSelected(selectedDate)
                     }
                 },

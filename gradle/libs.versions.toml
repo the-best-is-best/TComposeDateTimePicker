@@ -1,15 +1,14 @@
 [versions]
 
-kotlin = "2.1.21"
-compose = "1.8.1"
+kotlin = "2.2.0"
+compose = "1.8.2"
 agp = "8.10.1"
 androidx-activityCompose = "1.10.1"
-androidx-uiTest = "1.8.2"
-maven-publish = "0.31.0"
-kotlinxDatetime = "0.6.2"
-kotlinx-serialization = "1.8.1"
+androidx-uiTest = "1.8.3"
+maven-publish = "0.33.0"
+kotlinxDatetime = "0.7.0-0.6.x-compat"
+kotlinx-serialization = "1.9.0"
 calfUi = "0.8.0"
-kotlinStdlib = "2.1.21"
 runner = "1.6.2"
 core = "1.6.1"
 junit = "1.2.1"
@@ -22,8 +21,8 @@ androidx-uitest-junit4 = { module = "androidx.compose.ui:ui-test-junit4", versio
 calf-ui = { module = "com.mohamedrejeb.calf:calf-ui", version.ref = "calfUi" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinStdlib" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }

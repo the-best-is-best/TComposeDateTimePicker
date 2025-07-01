@@ -1,16 +1,16 @@
 package io.github.tcompose_date_picker.extensions
 
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.offsetAt
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.abs
+import kotlin.time.Clock
 import kotlin.time.DurationUnit
 import kotlin.time.DurationUnit.DAYS
 import kotlin.time.DurationUnit.HOURS
@@ -19,7 +19,10 @@ import kotlin.time.DurationUnit.MILLISECONDS
 import kotlin.time.DurationUnit.MINUTES
 import kotlin.time.DurationUnit.NANOSECONDS
 import kotlin.time.DurationUnit.SECONDS
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 fun LocalDateTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime {
     return Clock.System.now().toLocalDateTime(timeZone)
 }
@@ -38,16 +41,35 @@ fun LocalDateTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefau
     }
 }
 
+
  fun LocalDateTime.withYear(year: Int): LocalDateTime {
     return with(date.withYear(year), time)
 }
 
- fun LocalDateTime.withMonthNumber(monthNumber: Int): LocalDateTime {
-    return with(date.withMonthNumber(monthNumber), time)
+@Deprecated(
+    message = "Use withMonth instead",
+    replaceWith = ReplaceWith("withMonth(month)")
+)
+fun LocalDateTime.withMonthNumber(monthNumber: Int): LocalDateTime {
+    return with(withMonth(date.month), time)
 }
 
- fun LocalDateTime.withDayOfMonth(dayOfMonth: Int): LocalDateTime {
-    return with(date.withDayOfMonth(dayOfMonth), time)
+fun LocalDateTime.withMonth(month: Int): LocalDateTime {
+    return with(date.withMonth(month), time)
+}
+
+
+@Deprecated(
+    "Use withDay instead",
+    replaceWith = ReplaceWith("withDay(day)")
+)
+fun LocalDateTime.withDayOfMonth(dayOfMonth: Int): LocalDateTime {
+    return with(date.withDay(date.day), time)
+}
+
+
+fun LocalDateTime.withDay(day: Int): LocalDateTime {
+    return with(date.withDay(day), time)
 }
 
  fun LocalDateTime.withHour(hour: Int): LocalDateTime {
@@ -73,7 +95,7 @@ fun LocalDateTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefau
         MICROSECONDS -> LocalDateTime(
             year,
             month,
-            dayOfMonth,
+            day,
             hour,
             minute,
             second,
@@ -83,17 +105,17 @@ fun LocalDateTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefau
         MILLISECONDS -> LocalDateTime(
             year,
             month,
-            dayOfMonth,
+            day,
             hour,
             minute,
             second,
             nanosecond / 1000000
         )
 
-        SECONDS -> LocalDateTime(year, month, dayOfMonth, hour, minute, second)
-        MINUTES -> LocalDateTime(year, month, dayOfMonth, hour, minute)
-        HOURS -> LocalDateTime(year, month, dayOfMonth, hour, 0)
-        DAYS -> LocalDateTime(year, month, dayOfMonth, 0, 0)
+        SECONDS -> LocalDateTime(year, month, day, hour, minute, second)
+        MINUTES -> LocalDateTime(year, month, day, hour, minute)
+        HOURS -> LocalDateTime(year, month, day, hour, 0)
+        DAYS -> LocalDateTime(year, month, day, 0, 0)
         else -> throw IllegalArgumentException("The value `else` does not match any of the patterns.")
     }
 }
@@ -102,11 +124,13 @@ fun LocalDateTime.formatLocalDateTime(
     use24HourFormat: Boolean = false
 ): String {
     val year = this.year.toString().padStart(4, '0')
-    val month = this.monthNumber.toString().padStart(2, '0')
-    val day = this.dayOfMonth.toString().padStart(2, '0')
+    val month = this.month.number.toString().padStart(2, '0')  // 0.7.0
+    val day = this.day.toString().padStart(2, '0')              // 0.7.0
 
+    val hour12 = this.hour % 12
+    val displayHour = if (hour12 == 0) 12 else hour12
     val hour = if (use24HourFormat) this.hour.toString().padStart(2, '0')
-    else (if (this.hour == 0) 12 else this.hour % 12).toString()
+    else displayHour.toString()
 
     val amPm = if (use24HourFormat) "" else if (this.hour < 12) " AM" else " PM"
     val minute = this.minute.toString().padStart(2, '0')
@@ -116,10 +140,11 @@ fun LocalDateTime.formatLocalDateTime(
 }
 
 
+
 fun LocalDateTime.toIsoString(): String {
     val year = this.year.toString().padStart(4, '0')
-    val month = this.monthNumber.toString().padStart(2, '0')
-    val day = this.dayOfMonth.toString().padStart(2, '0')
+    val month = month.number.toString().padStart(2, '0')
+    val day = day.toString().padStart(2, '0')
     val hour = this.hour.toString().padStart(2, '0')
     val minute = this.minute.toString().padStart(2, '0')
     val second = this.second.toString().padStart(2, '0')
@@ -132,6 +157,7 @@ fun LocalDateTime.toIsoString(): String {
     }
 }
 
+@OptIn(ExperimentalTime::class)
 fun LocalDateTime.toIsoStringWithOffset(): String {
     val instant = this.toInstant(TimeZone.currentSystemDefault())
     val offset = TimeZone.currentSystemDefault().offsetAt(instant)
@@ -153,11 +179,13 @@ fun LocalDateTime.formattedDateTimeWithDayName(
 ): String {
     val dayName = this.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
     val year = this.year.toString().padStart(4, '0')
-    val month = this.monthNumber.toString().padStart(2, '0')
-    val day = this.dayOfMonth.toString().padStart(2, '0')
+    val month = month.number.toString().padStart(2, '0')
+    val day = day.toString().padStart(2, '0')
 
-    val hour = if (use24HourFormat) this.hour.toString().padStart(2, '0')
-    else (if (this.hour == 0) 12 else this.hour % 12).toString()
+    val hour12 = this.hour % 12
+    val displayHour = if (hour12 == 0) 12 else hour12
+    val hour =
+        if (use24HourFormat) this.hour.toString().padStart(2, '0') else displayHour.toString()
 
     val amPm = if (use24HourFormat) "" else if (this.hour < 12) " AM" else " PM"
     val minute = this.minute.toString().padStart(2, '0')
@@ -167,6 +195,7 @@ fun LocalDateTime.formattedDateTimeWithDayName(
 }
 
 
+@OptIn(ExperimentalTime::class)
 fun LocalTime.withCurrentDateAndOffset(timeZone: TimeZone = TimeZone.currentSystemDefault()): String {
     val now = Clock.System.now()
     val currentDate = now.toLocalDateTime(timeZone).date
@@ -180,6 +209,7 @@ fun LocalTime.withCurrentDateAndOffset(timeZone: TimeZone = TimeZone.currentSyst
 }
 
 
+@OptIn(ExperimentalTime::class)
 fun LocalDateTime.toInstant(timeZone: TimeZone = TimeZone.currentSystemDefault()): Instant {
     return this.toInstant(timeZone)
 }

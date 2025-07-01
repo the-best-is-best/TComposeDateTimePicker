@@ -39,15 +39,15 @@ import io.github.tcompose_date_picker.dialogs.time_picker.TimePickerDialog
 import io.github.tcompose_date_picker.extensions.formatLocalDateTime
 import io.github.tcompose_date_picker.extensions.now
 import io.github.tcompose_date_picker.extensions.toEpochMillis
-import kotlinx.datetime.Instant
+import io.github.tcompose_date_picker.extensions.toLocalDateTime
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun TKDateTimePicker(
     useAdaptive: Boolean = false,
@@ -96,7 +96,7 @@ fun TKDateTimePicker(
         derivedStateOf {
             tempDate?.let { date ->
                 tempTime?.let { (hour, minute) ->
-                    LocalDateTime(date.year, date.month, date.dayOfMonth, hour, minute)
+                    LocalDateTime(date.year, date.month, date.day, hour, minute)
                         .formatLocalDateTime(
                             withoutSeconds = true,
                             config.timeConfig.is24Hour
@@ -178,7 +178,7 @@ fun TKDateTimePicker(
                 onDateSelected = {
                     materialDatePickerState.selectedDateMillis?.let { millis ->
                         tempDate = Instant.fromEpochMilliseconds(millis)
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            .toLocalDateTime().date
                         showDatePicker = false
                         showDatePicker = false
                         showTimePicker = true
@@ -200,7 +200,7 @@ fun TKDateTimePicker(
                 onDateSelected = {
                     adaptiveDatePickerState.selectedDateMillis?.let { millis ->
                         tempDate = Instant.fromEpochMilliseconds(millis)
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            .toLocalDateTime().date
                         showDatePicker = false
                         showTimePicker = true
                     }
@@ -228,7 +228,7 @@ fun TKDateTimePicker(
                             LocalDateTime(
                                 date.year,
                                 date.month,
-                                date.dayOfMonth,
+                                date.day,
                                 tempTime!!.first,
                                 tempTime!!.second
                             )
@@ -256,7 +256,7 @@ fun TKDateTimePicker(
                             LocalDateTime(
                                 date.year,
                                 date.month,
-                                date.dayOfMonth,
+                                date.day,
                                 tempTime!!.first,
                                 tempTime!!.second
                             )

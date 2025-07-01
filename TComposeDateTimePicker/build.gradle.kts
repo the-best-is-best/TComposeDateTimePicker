@@ -1,9 +1,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
-import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.getCurrentOperatingSystem
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
@@ -42,7 +40,7 @@ tasks.withType<PublishToMavenRepository> {
 extra["packageNameSpace"] = "io.github.tcompose_date_time_picker"
 extra["groupId"] = "io.github.the-best-is-best"
 extra["artifactId"] = "compose_date_time_picker"
-extra["version"] = "3.2.3"
+extra["version"] = "3.4.0"
 extra["packageName"] = "TKCompose Date Picker "
 extra["packageUrl"] = "https://github.com/the-best-is-best/TComposeDateTimePicker"
 extra["packageDescription"] =
@@ -64,7 +62,7 @@ mavenPublishing {
         extra["version"].toString()
     )
 
-    publishToMavenCentral(SonatypeHost.S01, true)
+    publishToMavenCentral(true)
     signAllPublications()
 
     pom {
@@ -170,6 +168,7 @@ kotlin {
         }
 
         iosMain.dependencies {
+
         }
 
     }

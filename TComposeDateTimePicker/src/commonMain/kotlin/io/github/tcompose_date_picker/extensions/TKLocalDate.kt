@@ -1,17 +1,20 @@
 package io.github.tcompose_date_picker.extensions
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.min
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
- fun LocalDate.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDate {
+@OptIn(ExperimentalTime::class)
+fun LocalDate.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDate {
     return Clock.System.now().toLocalDateTime(timeZone).date
 }
 
@@ -25,54 +28,82 @@ import kotlin.math.min
  val LocalDate.isLeapYear: Boolean
     get() = isLeapYear(year)
 
- fun LocalDate.withDayOfMonth(dayOfMonth: Int): LocalDate {
-    return if (this.dayOfMonth == dayOfMonth) {
+
+@Deprecated(
+    message = "Use withDayOfMonth instead",
+    replaceWith = ReplaceWith("withDay(day)")
+)
+fun LocalDate.withDayOfMonth(dayOfMonth: Int): LocalDate {
+    return if (this.day == dayOfMonth) {
         this
     } else {
-        LocalDate(year, monthNumber, dayOfMonth)
+        resolvePreviousValid(year, month.number, dayOfMonth)
     }
 }
 
- fun LocalDate.withMonthNumber(monthNumber: Int): LocalDate {
-    return if (this.monthNumber == monthNumber) {
+fun LocalDate.withDay(day: Int): LocalDate {
+    return if (this.day == day) {
         this
     } else {
-        resolvePreviousValid(year, monthNumber, dayOfMonth)
+        resolvePreviousValid(year, month.number, day)
     }
 }
+
+@Deprecated(
+    message = "Use withMonth instead",
+    replaceWith = ReplaceWith("withMonth(month)")
+)
+fun LocalDate.withMonthNumber(monthNumber: Int): LocalDate {
+    return if (this.month.number == monthNumber) {
+        this
+    } else {
+        resolvePreviousValid(year, monthNumber, day)
+    }
+}
+
+
+fun LocalDate.withMonth(month: Int): LocalDate {
+    return if (this.month.number == month) {
+        this
+    } else {
+        resolvePreviousValid(year, month, day)
+    }
+}
+
 
  fun LocalDate.withYear(year: Int): LocalDate {
     return if (this.year == year) {
         this
     } else {
-        resolvePreviousValid(year, monthNumber, dayOfMonth)
+        resolvePreviousValid(year, month.number, day)
     }
 }
 
+@OptIn(ExperimentalTime::class)
 fun LocalDate.toEpochMillis(): Long {
-    return this.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+    return this.atStartOfDayIn(timeZone = TimeZone.currentSystemDefault()).toEpochMilliseconds()
 }
 
- fun resolvePreviousValid(
+internal fun resolvePreviousValid(
      year: Int,
-     monthNumber: Int,
-     dayOfMonth: Int,
+     month: Int,
+     day: Int,
  ): LocalDate {
-    val newDayOfMonth = when (monthNumber) {
+    val newDayOfMonth = when (month) {
         2 -> {
-            min(dayOfMonth, if (isLeapYear(year)) 29 else 28)
+            min(day, if (isLeapYear(year)) 29 else 28)
         }
 
         4, 6, 9, 11 -> {
-            min(dayOfMonth, 30)
+            min(day, 30)
         }
 
         else -> {
-            dayOfMonth
+            month
         }
     }
 
-    return LocalDate(year, monthNumber, newDayOfMonth)
+    return LocalDate(year, month, newDayOfMonth)
 }
 
 fun LocalDate.isBefore(other: LocalDate): Boolean {
@@ -93,16 +124,18 @@ internal fun LocalDate.minusDays(daysToSubtract: Long): LocalDate {
 
 fun LocalDate.formatLocalDate(): String {
     val year = this.year.toString().padStart(4, '0')
-    val month = this.monthNumber.toString().padStart(2, '0')
-    val day = this.dayOfMonth.toString().padStart(2, '0')
+    val month = month.number.toString().padStart(2, '0')
+    val day = day.toString().padStart(2, '0')
 
     return "$day/$month/$year" // Format as "dd/MM/yyyy"
 }
 
+@OptIn(ExperimentalTime::class)
 fun LocalDate.toInstant(timeZone: TimeZone = TimeZone.currentSystemDefault()): Instant =
     this.atStartOfDayIn(timeZone)
 
 
+@OptIn(ExperimentalTime::class)
 fun LocalDate.toLocalDateTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime {
     return this.atStartOfDayIn(timeZone).toLocalDateTime(timeZone)
 }

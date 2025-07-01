@@ -1,11 +1,13 @@
 package io.github.tcompose_date_picker.extensions
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
- fun LocalTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalTime {
+@OptIn(ExperimentalTime::class)
+fun LocalTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalTime {
     return Clock.System.now().toLocalDateTime(timeZone).time
 }
 
