@@ -51,7 +51,7 @@ fun LocalDateTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefau
     replaceWith = ReplaceWith("withMonth(month)")
 )
 fun LocalDateTime.withMonthNumber(monthNumber: Int): LocalDateTime {
-    return with(withMonth(date.month), time)
+    return with(date.withMonthNumber(monthNumber), time)
 }
 
 fun LocalDateTime.withMonth(month: Int): LocalDateTime {
@@ -64,7 +64,7 @@ fun LocalDateTime.withMonth(month: Int): LocalDateTime {
     replaceWith = ReplaceWith("withDay(day)")
 )
 fun LocalDateTime.withDayOfMonth(dayOfMonth: Int): LocalDateTime {
-    return with(date.withDay(date.day), time)
+    return with(date.withDayOfMonth(dayOfMonth), time)
 }
 
 

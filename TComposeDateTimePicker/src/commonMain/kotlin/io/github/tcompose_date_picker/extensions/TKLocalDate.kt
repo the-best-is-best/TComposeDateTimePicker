@@ -30,7 +30,7 @@ fun LocalDate.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()
 
 
 @Deprecated(
-    message = "Use withDayOfMonth instead",
+    message = "Use withDay instead",
     replaceWith = ReplaceWith("withDay(day)")
 )
 fun LocalDate.withDayOfMonth(dayOfMonth: Int): LocalDate {
@@ -54,13 +54,12 @@ fun LocalDate.withDay(day: Int): LocalDate {
     replaceWith = ReplaceWith("withMonth(month)")
 )
 fun LocalDate.withMonthNumber(monthNumber: Int): LocalDate {
-    return if (this.month.number == monthNumber) {
+    return if (this.monthNumber == monthNumber) {
         this
     } else {
-        resolvePreviousValid(year, monthNumber, day)
+        resolvePreviousValid(year, monthNumber, dayOfMonth)
     }
 }
-
 
 fun LocalDate.withMonth(month: Int): LocalDate {
     return if (this.month.number == month) {
