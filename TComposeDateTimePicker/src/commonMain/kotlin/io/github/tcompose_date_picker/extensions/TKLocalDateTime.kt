@@ -12,6 +12,7 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 fun LocalDateTime.Companion.now(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime {
@@ -103,6 +104,13 @@ fun LocalDateTime.toIsoString(): String {
     }
 }
 
+
+@OptIn(ExperimentalTime::class)
+fun LocalDateTime.toInstant(timeZone: TimeZone = TimeZone.currentSystemDefault()): Instant {
+    return this.toInstant(timeZone)
+}
+
+
 @OptIn(ExperimentalTime::class)
 fun LocalDateTime.toIsoStringWithOffset(timeZone: TimeZone = TimeZone.currentSystemDefault()): String {
     val instant = this.toInstant(timeZone)
@@ -118,7 +126,7 @@ fun LocalDateTime.toIsoStringWithOffset(timeZone: TimeZone = TimeZone.currentSys
 
 fun LocalDateTime.formattedDateTimeWithDayName(
     withoutSeconds: Boolean = true,
-    use24HourFormat: Boolean = false
+    use24HourFormat: Boolean = false,
 ): String {
     val dayName = this.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
     val year = this.year.toString().padStart(4, '0')

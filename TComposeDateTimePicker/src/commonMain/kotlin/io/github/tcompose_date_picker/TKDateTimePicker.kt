@@ -98,6 +98,12 @@ fun TKDateTimePicker(
         is24Hour = config.timeConfig.is24Hour
     )
 
+    LaunchedEffect(Unit) {
+        tempDate = config.dateConfig.initDate ?: LocalDate.now()
+        tempTime = config.timeConfig.initTime?.let { it.hour to it.minute }
+            ?: (LocalTime.now().hour to LocalTime.now().minute)
+    }
+
     val formattedDateTime by remember {
         derivedStateOf {
             tempDate?.let { date ->
