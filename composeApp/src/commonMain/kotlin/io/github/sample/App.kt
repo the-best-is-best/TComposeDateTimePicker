@@ -35,7 +35,9 @@ import io.github.tcompose_date_picker.config.ConfigDateTimePicker
 import io.github.tcompose_date_picker.config.ConfigTimePicker
 import io.github.tcompose_date_picker.config.TextFieldType
 import io.github.tcompose_date_picker.extensions.formatLocalTime
+import io.github.tcompose_date_picker.extensions.now
 import io.github.tcompose_date_picker.extensions.toIsoStringWithOffset
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +60,15 @@ internal fun App() = AppTheme {
             config = ConfigDateTimePicker(
                 label = {
                     Text("Select date and time")
-                }
+                },
+                dateConfig =
+                    ConfigDatePicker(
+                        initDate = LocalDate.now(),
+                        yearRange = IntRange(
+                            LocalDate.now().year,
+                            LocalDate.now().year + 20
+                        )
+                    )
 
             ),
             isDialogOpen = {
@@ -75,7 +85,8 @@ internal fun App() = AppTheme {
             config = ConfigDatePicker(
                 label = {
                     Text("Select Date")
-                }
+                },
+                initDate = LocalDate.now(),
 
             ),
             isDialogOpen = {
@@ -88,6 +99,13 @@ internal fun App() = AppTheme {
 
         TKTimePicker(
             useAdaptive = true,
+            config = ConfigTimePicker(
+                initTime = LocalTime.now(),
+                is24Hour = false,
+                label = {
+                    Text("Select Time")
+                }
+            ),
             textFieldType = TextFieldType.Custom { modifier ->
                 Row(
                     modifier = modifier.widthIn(min = 200.dp),
@@ -118,11 +136,7 @@ internal fun App() = AppTheme {
                 }
 
             },
-            config = ConfigTimePicker(
-                label = {
-                    Text("Time")
-                }
-            ),
+
             isDialogOpen = {
 
             },
