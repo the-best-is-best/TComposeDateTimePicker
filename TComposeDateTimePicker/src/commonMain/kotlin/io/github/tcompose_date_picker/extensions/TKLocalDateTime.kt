@@ -4,6 +4,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.offsetAt
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
@@ -74,8 +75,8 @@ fun LocalDateTime.formatLocalDateTime(
     use24HourFormat: Boolean = false
 ): String {
     val year = this.year.toString().padStart(4, '0')
-    val month = this.monthNumber.toString().padStart(2, '0')
-    val day = this.dayOfMonth.toString().padStart(2, '0')
+    val month = this.month.number.toString().padStart(2, '0')
+    val day = this.day.toString().padStart(2, '0')
     val hour12 = this.hour % 12
     val displayHour = if (hour12 == 0) 12 else hour12
     val hour =
@@ -88,8 +89,8 @@ fun LocalDateTime.formatLocalDateTime(
 
 fun LocalDateTime.toIsoString(): String {
     val year = this.year.toString().padStart(4, '0')
-    val month = this.monthNumber.toString().padStart(2, '0')
-    val day = this.dayOfMonth.toString().padStart(2, '0')
+    val month = this.month.number.toString().padStart(2, '0')
+    val day = this.day.toString().padStart(2, '0')
     val hour = this.hour.toString().padStart(2, '0')
     val minute = this.minute.toString().padStart(2, '0')
     val second = this.second.toString().padStart(2, '0')
@@ -121,8 +122,8 @@ fun LocalDateTime.formattedDateTimeWithDayName(
 ): String {
     val dayName = this.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
     val year = this.year.toString().padStart(4, '0')
-    val month = this.monthNumber.toString().padStart(2, '0')
-    val day = this.dayOfMonth.toString().padStart(2, '0')
+    val month = this.month.number.toString().padStart(2, '0')
+    val day = this.day.toString().padStart(2, '0')
     val hour12 = this.hour % 12
     val displayHour = if (hour12 == 0) 12 else hour12
     val hour =

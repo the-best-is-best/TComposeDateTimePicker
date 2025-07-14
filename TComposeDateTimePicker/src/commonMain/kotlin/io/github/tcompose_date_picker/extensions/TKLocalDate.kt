@@ -39,7 +39,7 @@ fun LocalDate.withDayOfMonth(dayOfMonth: Int): LocalDate {
 }
 
 fun LocalDate.withDay(day: Int): LocalDate {
-    return if (this.dayOfMonth == day) this else resolvePreviousValid(year, month.number, day)
+    return if (this.day == day) this else resolvePreviousValid(year, month.number, day)
 }
 
 @Deprecated(message = "Use withMonth instead", replaceWith = ReplaceWith("this.withMonth(month)"))
@@ -52,11 +52,11 @@ fun LocalDate.withMonthNumber(monthNumber: Int): LocalDate {
 }
 
 fun LocalDate.withMonth(month: Int): LocalDate {
-    return if (this.month.number == month) this else resolvePreviousValid(year, month, dayOfMonth)
+    return if (this.month.number == month) this else resolvePreviousValid(year, month, day)
 }
 
 fun LocalDate.withYear(year: Int): LocalDate {
-    return if (this.year == year) this else resolvePreviousValid(year, month.number, dayOfMonth)
+    return if (this.year == year) this else resolvePreviousValid(year, month.number, day)
 }
 
 @OptIn(ExperimentalTime::class)
@@ -97,7 +97,7 @@ internal fun LocalDate.minusDays(daysToSubtract: Long): LocalDate {
 fun LocalDate.formatLocalDate(): String {
     val year = this.year.toString().padStart(4, '0')
     val month = month.number.toString().padStart(2, '0')
-    val day = dayOfMonth.toString().padStart(2, '0')
+    val day = day.toString().padStart(2, '0')
     return "$day/$month/$year"
 }
 
