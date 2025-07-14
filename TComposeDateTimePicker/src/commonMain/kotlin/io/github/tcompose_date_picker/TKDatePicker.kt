@@ -31,7 +31,7 @@ import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.config.TextFieldType
 import io.github.tcompose_date_picker.dialogs.date_picker.AdaptiveDatePickerDialog
 import io.github.tcompose_date_picker.extensions.formatLocalDate
-import io.github.tcompose_date_picker.extensions.toEpochMillis
+import io.github.tcompose_date_picker.extensions.toEpochMillisAtUtc
 import io.github.tcompose_date_picker.extensions.toLocalDateTime
 import kotlinx.datetime.LocalDate
 import kotlin.time.ExperimentalTime
@@ -60,11 +60,11 @@ fun TKDatePicker(
 
 
     val materialDatePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = config.initDate?.toEpochMillis(),
+        initialSelectedDateMillis = config.initDate?.toEpochMillisAtUtc(),
         yearRange = config.yearRange
     )
     val adaptiveDatePickerState = rememberAdaptiveDatePickerState(
-        initialSelectedDateMillis = config.initDate?.toEpochMillis(),
+        initialSelectedDateMillis = config.initDate?.toEpochMillisAtUtc(),
         yearRange = config.yearRange
     )
 

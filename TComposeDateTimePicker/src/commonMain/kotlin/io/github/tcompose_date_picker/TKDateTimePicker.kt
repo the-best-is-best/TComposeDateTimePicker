@@ -38,11 +38,13 @@ import io.github.tcompose_date_picker.dialogs.time_picker.AdaptiveTimePickerDial
 import io.github.tcompose_date_picker.dialogs.time_picker.TimePickerDialog
 import io.github.tcompose_date_picker.extensions.formatLocalDateTime
 import io.github.tcompose_date_picker.extensions.now
-import io.github.tcompose_date_picker.extensions.toEpochMillis
+import io.github.tcompose_date_picker.extensions.toEpochMillisAtUtc
 import io.github.tcompose_date_picker.extensions.toLocalDateTime
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -71,13 +73,17 @@ fun TKDateTimePicker(
     var tempDate by remember { mutableStateOf<LocalDate?>(null) }
     var tempTime by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
+    val millis = LocalDate.now(TimeZone.currentSystemDefault())
+        .atStartOfDayIn(TimeZone.currentSystemDefault())
+        .toEpochMilliseconds()
+
     val materialDatePickerState = rememberDatePickerState(
         yearRange = config.dateConfig.yearRange,
-        initialSelectedDateMillis = config.dateConfig.initDate?.toEpochMillis()
+        initialSelectedDateMillis = config.dateConfig.initDate?.toEpochMillisAtUtc()
     )
     val adaptiveDatePickerState = rememberAdaptiveDatePickerState(
         yearRange = config.dateConfig.yearRange,
-        initialSelectedDateMillis = config.dateConfig.initDate?.toEpochMillis()
+        initialSelectedDateMillis = config.dateConfig.initDate?.toEpochMillisAtUtc()
     )
 
     val materialTimeState = rememberTimePickerState(
