@@ -99,6 +99,13 @@ internal fun App() = AppTheme {
 
         TKTimePicker(
             useAdaptive = true,
+            config = ConfigTimePicker(
+                initTime = LocalTime.now(),
+                is24Hour = false,
+                label = {
+                    Text("Select Time")
+                }
+            ),
             textFieldType = TextFieldType.Custom { modifier ->
                 Row(
                     modifier = modifier.widthIn(min = 200.dp),
@@ -129,11 +136,7 @@ internal fun App() = AppTheme {
                 }
 
             },
-            config = ConfigTimePicker(
-                label = {
-                    Text("Time")
-                }
-            ),
+
             isDialogOpen = {
 
             },

@@ -43,8 +43,6 @@ import io.github.tcompose_date_picker.extensions.toLocalDateTime
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -73,10 +71,11 @@ fun TKDateTimePicker(
     var tempDate by remember { mutableStateOf<LocalDate?>(null) }
     var tempTime by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
-    val millis = LocalDate.now(TimeZone.currentSystemDefault())
-        .atStartOfDayIn(TimeZone.currentSystemDefault())
-        .toEpochMilliseconds()
-
+    LaunchedEffect(config.dateConfig.initDate, config.timeConfig.initTime) {
+        tempDate = config.dateConfig.initDate ?: LocalDate.now()
+        tempTime = config.timeConfig.initTime?.let { it.hour to it.minute }
+            ?: (LocalTime.now().hour to LocalTime.now().minute)
+    }
     val materialDatePickerState = rememberDatePickerState(
         yearRange = config.dateConfig.yearRange,
         initialSelectedDateMillis = config.dateConfig.initDate?.toEpochMillisAtUtc()
@@ -85,6 +84,7 @@ fun TKDateTimePicker(
         yearRange = config.dateConfig.yearRange,
         initialSelectedDateMillis = config.dateConfig.initDate?.toEpochMillisAtUtc()
     )
+
 
     val materialTimeState = rememberTimePickerState(
         initialHour = config.timeConfig.initTime?.hour ?: LocalTime.now().hour,

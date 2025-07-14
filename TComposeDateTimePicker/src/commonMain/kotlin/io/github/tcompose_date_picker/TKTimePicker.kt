@@ -48,55 +48,66 @@ fun TKTimePicker(
     isDialogOpen: (Boolean) -> Unit,
     textFieldType: TextFieldType = TextFieldType.Outlined,
     onDismiss: () -> Unit = {},
-    enable: Boolean = true
-
-
-    ) {
+    enable: Boolean = true,
+) {
     var showTimePicker by remember { mutableStateOf(false) }
+
     val materialTimeState = rememberTimePickerState(
         initialHour = config.initTime?.hour ?: 0,
         initialMinute = config.initTime?.minute ?: 0,
         is24Hour = config.is24Hour
     )
+
     val adaptiveTimeState = rememberAdaptiveTimePickerState(
         initialHour = config.initTime?.hour ?: 0,
         initialMinute = config.initTime?.minute ?: 0,
         is24Hour = config.is24Hour
     )
-    var tempTime by remember {
-        mutableStateOf(config.initTime?.let { it.hour to it.minute })
-    }
-    val formattedTime by remember {
-        derivedStateOf {
-            if (tempTime == null) "" else LocalTime(
-                tempTime!!.first,
-                tempTime!!.second
-            ).formatLocalTime(use24HourFormat = config.is24Hour)
+
+    // هذا ال state لتخزين الوقت المختار مؤقتاً ويُحدّث يدويًا
+    var tempTime by remember { mutableStateOf(config.initTime ?: LocalTime(0, 0)) }
+
+    // عندما يتغير initTime في config يحدث tempTime و materialTimeState
+    LaunchedEffect(config.initTime) {
+        config.initTime?.let {
+            materialTimeState.hour = it.hour
+            materialTimeState.minute = it.minute
+            tempTime = it
         }
     }
 
+    // نص الوقت المنسق للعرض
+    val formattedTime by remember(tempTime, config.is24Hour) {
+        derivedStateOf {
+            tempTime.formatLocalTime(use24HourFormat = config.is24Hour)
+        }
+    }
+
+    // تحديث الحالة إذا تم فتح أو إغلاق الـ Dialog
     LaunchedEffect(showTimePicker) {
         isDialogOpen(showTimePicker)
     }
 
-
+    // ضبط ألوان الـ TextField بناءً على النوع
     val resolvedColors = when (textFieldType) {
-
         TextFieldType.Outlined -> inputFieldColors ?: OutlinedTextFieldDefaults.colors()
         TextFieldType.Filled -> inputFieldColors ?: TextFieldDefaults.colors()
         else -> null
-
     }
-    val inputModifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedTime) {
-        awaitEachGesture {
-            awaitFirstDown(pass = PointerEventPass.Initial)
-            val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-            if (upEvent != null) {
-                showTimePicker = true
+
+    val inputModifier = modifier
+        .width(IntrinsicSize.Max)
+        .pointerInput(formattedTime) {
+            awaitEachGesture {
+                awaitFirstDown(pass = PointerEventPass.Initial)
+                val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                if (upEvent != null) {
+                    showTimePicker = true
+                }
             }
         }
-    }
 
+    // رسم TextField بناءً على textFieldType
     when (textFieldType) {
         is TextFieldType.Custom -> textFieldType.textField(inputModifier)
 
@@ -119,15 +130,7 @@ fun TKTimePicker(
         )
 
         TextFieldType.Filled -> TextField(
-            modifier = modifier.width(IntrinsicSize.Max).pointerInput(formattedTime) {
-                awaitEachGesture {
-                    awaitFirstDown(pass = PointerEventPass.Initial)
-                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                    if (upEvent != null) {
-                        showTimePicker = true
-                    }
-                }
-            },
+            modifier = inputModifier,
             shape = shape,
             readOnly = true,
             value = formattedTime,
@@ -145,6 +148,7 @@ fun TKTimePicker(
         )
     }
 
+    // عرض الـ Dialog المناسب بناءً على useAdaptive
     if (showTimePicker) {
         if (!useAdaptive) {
             TimePickerDialog(
@@ -156,8 +160,9 @@ fun TKTimePicker(
                     onDismiss()
                 },
                 onDateSelected = {
-                    tempTime = Pair(materialTimeState.hour, materialTimeState.minute)
-                    onTimeSelected(LocalTime(materialTimeState.hour, materialTimeState.minute))
+                    val selected = LocalTime(materialTimeState.hour, materialTimeState.minute)
+                    tempTime = selected
+                    onTimeSelected(selected)
                     showTimePicker = false
                 },
                 config = config,
@@ -170,16 +175,17 @@ fun TKTimePicker(
                 onDismiss = {
                     showTimePicker = false
                     isDialogOpen(false)
+                    onDismiss()
                 },
                 onDateSelected = {
-                    tempTime = Pair(adaptiveTimeState.hour, adaptiveTimeState.minute)
-                    onTimeSelected(LocalTime(adaptiveTimeState.hour, adaptiveTimeState.minute))
+                    val selected = LocalTime(adaptiveTimeState.hour, adaptiveTimeState.minute)
+                    tempTime = selected
+                    onTimeSelected(selected)
                     showTimePicker = false
                 },
                 config = config,
                 colors = colors
             )
         }
-
     }
 }
