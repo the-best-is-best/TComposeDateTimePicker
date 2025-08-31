@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import com.mohamedrejeb.calf.ui.timepicker.rememberAdaptiveTimePickerState
+import io.github.tbib.kadaptiveui.time_picker.rememberAdaptiveTimePickerState
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.config.ConfigTimePicker
 import io.github.tcompose_date_picker.config.TextFieldType

@@ -33,22 +33,8 @@ fun LocalDateTime.withYear(year: Int): LocalDateTime {
     return with(date.withYear(year), time)
 }
 
-@Deprecated("Use withMonth instead", ReplaceWith("this.withMonth(month)"))
-fun LocalDateTime.withMonthNumber(monthNumber: Int): LocalDateTime {
-    return if (this.monthNumber == monthNumber) this else resolvePreviousValid(
-        year,
-        monthNumber,
-        day
-    )
-}
-
 fun LocalDateTime.withMonth(month: Int): LocalDateTime {
     return with(date.withMonth(month), time)
-}
-
-@Deprecated("Use withDay instead", ReplaceWith("this.withDay(day)"))
-fun LocalDateTime.withDayOfMonth(dayOfMonth: Int): LocalDateTime {
-    return with(date.withDayOfMonth(dayOfMonth), time)
 }
 
 fun LocalDateTime.withDay(day: Int): LocalDateTime {

@@ -6,8 +6,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePickerColors
 import androidx.compose.runtime.Composable
-import com.mohamedrejeb.calf.ui.timepicker.AdaptiveTimePicker
-import com.mohamedrejeb.calf.ui.timepicker.AdaptiveTimePickerState
+import io.github.tbib.kadaptiveui.time_picker.AdaptiveTimePicker
+import io.github.tbib.kadaptiveui.time_picker.AdaptiveTimePickerState
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.config.ConfigTimePicker
 

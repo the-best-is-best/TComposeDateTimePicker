@@ -9,8 +9,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
-import com.mohamedrejeb.calf.ui.datepicker.AdaptiveDatePicker
-import com.mohamedrejeb.calf.ui.datepicker.AdaptiveDatePickerState
+import io.github.tbib.kadaptiveui.date_picker.AdaptiveDatePicker
+import io.github.tbib.kadaptiveui.date_picker.AdaptiveDatePickerState
 import io.github.tcompose_date_picker.config.ConfigDatePicker
 import io.github.tcompose_date_picker.config.ConfigDialog
 

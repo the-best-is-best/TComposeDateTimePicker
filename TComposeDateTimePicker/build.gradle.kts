@@ -6,10 +6,10 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    alias(libs.plugins.multiplatform)
-    alias(libs.plugins.compose)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeMultiplatform)
     id("maven-publish")
     id("signing")
     alias(libs.plugins.maven.publish)
@@ -141,7 +141,7 @@ kotlin {
 
             api(libs.kotlinx.datetime)
             api(libs.kotlinx.serialization.json)
-            api(libs.calf.ui)
+            implementation(libs.kadaptiveui)
 
 
 
@@ -156,7 +156,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(compose.uiTooling)
-            implementation(libs.androidx.activityCompose)
+            implementation(libs.androidx.activity.compose)
         }
 
         jvmMain.dependencies {
