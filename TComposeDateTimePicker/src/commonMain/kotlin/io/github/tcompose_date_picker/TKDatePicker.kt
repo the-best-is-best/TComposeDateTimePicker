@@ -29,6 +29,7 @@ import io.github.tbib.kadaptiveui.date_picker.rememberAdaptiveDatePickerState
 import io.github.tcompose_date_picker.config.ConfigDatePicker
 import io.github.tcompose_date_picker.config.ConfigDialog
 import io.github.tcompose_date_picker.config.TextFieldType
+import io.github.tcompose_date_picker.config.toSelectableDates
 import io.github.tcompose_date_picker.dialogs.date_picker.AdaptiveDatePickerDialog
 import io.github.tcompose_date_picker.extensions.formatLocalDate
 import io.github.tcompose_date_picker.extensions.toEpochMillisAtUtc
@@ -61,11 +62,17 @@ fun TKDatePicker(
 
     val materialDatePickerState = rememberDatePickerState(
         initialSelectedDateMillis = config.initDate?.toEpochMillisAtUtc(),
-        yearRange = config.yearRange
+        yearRange = config.yearRange,
+        selectableDates = toSelectableDates(
+            minDate = config.minDate,
+            maxDate = config.maxDate
+        )
     )
     val adaptiveDatePickerState = rememberAdaptiveDatePickerState(
         initialSelectedDateMillis = config.initDate?.toEpochMillisAtUtc(),
-        yearRange = config.yearRange
+        yearRange = config.yearRange,
+        minDate = config.minDate,
+        maxDate = config.maxDate,
     )
 
     var tempDate by remember { mutableStateOf(config.initDate) }

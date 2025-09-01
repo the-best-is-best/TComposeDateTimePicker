@@ -12,6 +12,8 @@ class ConfigDatePicker @OptIn(ExperimentalMaterial3Api::class) constructor(
     val dateFormatter: DatePickerFormatter? = null,
     val initDate: LocalDate? = null,
     val yearRange: IntRange = IntRange(1900, 2100),
+    val minDate: LocalDate? = null,
+    val maxDate: LocalDate? = null,
 
     val label: @Composable (() -> Unit)? = null,
     val placeholder: @Composable (() -> Unit)? = null,
