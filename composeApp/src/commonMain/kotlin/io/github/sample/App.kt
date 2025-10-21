@@ -64,6 +64,7 @@ internal fun App() = AppTheme {
                 dateConfig =
                     ConfigDatePicker(
                         initDate = LocalDate.now(),
+                        maxDate = LocalDate.now(),
                         yearRange = IntRange(
                             LocalDate.now().year,
                             LocalDate.now().year + 20
@@ -87,6 +88,7 @@ internal fun App() = AppTheme {
                     Text("Select Date")
                 },
                 initDate = LocalDate.now(),
+                minDate = LocalDate.now(),
 
             ),
             isDialogOpen = {

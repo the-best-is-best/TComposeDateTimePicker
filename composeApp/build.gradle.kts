@@ -76,11 +76,11 @@ kotlin {
 
 android {
     namespace = "io.github.sample"
-    compileSdk = 35
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        minSdk = 21
-        targetSdk = 35
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
 
         applicationId = "org.company.app.androidApp"
         versionCode = 1
