@@ -65,7 +65,7 @@ repositories {
 }
 
 dependencies {
-  implementation("io.github.the-best-is-best:compose_date_time_picker:3.2.3")
+  implementation("io.github.the-best-is-best:compose_date_time_picker:3.7.0")
 }
 ```
 
