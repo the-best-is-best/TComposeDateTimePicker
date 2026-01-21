@@ -42,7 +42,7 @@ import kotlinx.datetime.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun App() = AppTheme {
+fun App() = AppTheme {
     var time by remember { mutableStateOf<LocalTime?>(null) }
     var isDialogOpen by remember { mutableStateOf(false) }
     Column(

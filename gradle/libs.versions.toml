@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.0"
+agp = "9.0.0"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
@@ -15,7 +15,7 @@ composeMultiplatform = "1.10.0"
 #junit = "4.13.2"
 foundation = "1.10.0"
 htmlCore = "1.10.0"
-kadaptiveui = "1.2.1"
+kadaptiveui = "1.2.2"
 kotlin = "2.3.0"
 kotlinx-coroutines = "1.10.2"
 kotlinxDatetime = "0.7.1"
@@ -47,12 +47,10 @@ runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "run
 ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "uiTooling" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
 #composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 androidLint = { id = "com.android.lint", version.ref = "agp" }
-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }

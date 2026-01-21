@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeMultiplatform)
     id("maven-publish")
@@ -106,11 +106,7 @@ val packageNameSpace = extra["packageNameSpace"].toString()
 
 kotlin {
     jvmToolchain(17)
-    androidTarget()
-
-
-
-
+    
     jvm()
 
     js {
@@ -172,12 +168,11 @@ kotlin {
         }
 
     }
-}
 
-android {
-    namespace = packageNameSpace
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    defaultConfig {
+    android {
+        namespace = packageNameSpace
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+
 }
