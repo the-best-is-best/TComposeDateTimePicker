@@ -40,7 +40,7 @@ tasks.withType<PublishToMavenRepository> {
 extra["packageNameSpace"] = "io.github.tcompose_date_time_picker"
 extra["groupId"] = "io.github.the-best-is-best"
 extra["artifactId"] = "compose_date_time_picker"
-extra["version"] = "3.7.0"
+extra["version"] = "3.7.1"
 extra["packageName"] = "TKCompose Date Picker "
 extra["packageUrl"] = "https://github.com/the-best-is-best/TComposeDateTimePicker"
 extra["packageDescription"] =
@@ -135,9 +135,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
+            implementation(libs.runtime)
+            implementation(libs.foundation)
+            implementation(libs.material3)
 
             api(libs.kotlinx.datetime)
             api(libs.kotlinx.serialization.json)
@@ -148,14 +148,14 @@ kotlin {
 
         }
 
-        commonTest.dependencies {
-            implementation(kotlin("test"))
-            @OptIn(ExperimentalComposeLibrary::class)
-            implementation(compose.uiTest)
-        }
+//        commonTest.dependencies {
+//            implementation(kotlin("test"))
+//            @OptIn(ExperimentalComposeLibrary::class)
+//            implementation(compose.uiTest)
+//        }
 
         androidMain.dependencies {
-            implementation(compose.uiTooling)
+            implementation(libs.ui.tooling)
             implementation(libs.androidx.activity.compose)
         }
 
@@ -164,7 +164,7 @@ kotlin {
         }
 
         jsMain.dependencies {
-            implementation(compose.html.core)
+            implementation(libs.html.core)
         }
 
         iosMain.dependencies {

@@ -41,8 +41,9 @@ manipulation, formatting, and conversion.
   - **Date Picker**: `TKDatePicker`
   - **Time Picker**: `TKTimePicker`
   - **Date-Time Picker**: `TKDateTimePicker`
-- **Adaptive UI**: Automatically adapts to different screen sizes and platforms using
-  the [calf-ui](https://central.sonatype.com/artifact/com.mohamedrejeb.calf/calf-ui) library.
+- **Adaptive UI**: Automatically adapts to different screen sizes and platforms.
+    - Versions **< 3.5.0** use **calf-ui**.
+    - Versions **>= 3.5.0** use **kadaptiveui**.
 - **Rich Extensions** for `kotlinx.datetime`, including:
   - Date/time formatting.
   - Conversion between `LocalDate`, `LocalDateTime`, and epoch milliseconds.
